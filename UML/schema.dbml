@@ -1,0 +1,99 @@
+
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table Véhicules {
+  Id_vehicule int [pk]
+  Num_acc int
+  Num_Vehicule string
+  sens_circulation int
+  Cat_vehicule int
+  Obstacle_fixe int
+  Obstacle_mobile int
+  Choc int
+  Maneuvre int
+  Motor int
+  Occupants_transports_communs int
+}
+
+Table Caract {
+  Num_acc integer [pk]
+  Jour int
+  Mois int
+  Annee int
+  Heure_Min time
+  Lumiere int
+  Departement varchar
+  Commune varchar
+  Agglomeration int
+  Intersection int
+  Atmosphere int 
+  Collision int
+  Adresse_postale varchar
+  Latitude float
+  Longitude float  
+}
+
+Table Lieux {
+  Num_acc integer [pk]
+  Cat_route int
+  Voie varchar
+  V1 varchar
+  V2 varchar
+  Circulation int
+  Nb_total_de_voie int
+  Voie_reservee int
+  Profil_en_long int
+  PR varchar
+  PR1 int
+  Plan int
+  Largeur_terre_plein float
+  Largeur_chaussee float
+  Etat_surface int
+  Infrastructure int
+  Situation int
+  Vit_Max_Autorise int
+}
+
+Table Usagers {
+  Id_usager int [pk]
+  Num_acc integer
+  Id_vehicule int
+  Num_vehicule varchar
+  Place_occupe int
+  Cat_usager int
+  Gravite int
+  Sexe int
+  Annee_naissance int
+  Type_trajet int
+  Equip_secu_1 int
+  Equip_secu_2 int
+  Equip_secu_3 int
+  Position_pieton int
+  Action_pieton varchar
+  Pieton_seul int
+}
+
+Ref: Caract.Num_acc - Lieux.Num_acc
+Ref: Caract.Num_acc < Véhicules.Num_acc
+Ref: Véhicules.Id_vehicule < Usagers.Id_vehicule
+Ref: Caract.Num_acc < Usagers.Num_acc
+
+
+// Records users(id, username, role) {
+//   0, 'Alice', 'admin'
+//   1, 'Bob', 'moderator'
+//   2, 'Candice', 'moderator'
+//   3, 'David', 'member'
+// }
+
+// Records follows(following_user_id, followed_user_id, created_at) {
+//   1, 0, '2026-01-01'
+//   3, 2, '2026-02-28'
+// }
+
+// Records posts(id, title, user_id) {
+//   0, 'Welcome to the forum!', 0
+//   1, 'Guidelines', 1
+//   2, 'Hello all!', 3
+// }

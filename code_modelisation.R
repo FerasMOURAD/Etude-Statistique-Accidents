@@ -2,7 +2,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
-setwd("/home/fm/Desktop/Me/Personal/Projects/Uni/Etude-Statistique-Accidents")
+setwd("/home/fm/Desktop/Me/Uni_Stuff/BUTSD/Etude-Statistique-Accidents/")
 
 caracteristiques_2024 = read.csv("Ressources/caract-2024.csv", sep = ";", header = TRUE)
 lieux_2024 = read.csv("Ressources/lieux-2024.csv", sep = ";", header = TRUE)
@@ -14,13 +14,21 @@ nb_victimes_par_accident = usagers_2024 %>%
   group_by(Num_Acc) %>%
   filter(grav != 1) %>%
   summarise(Nb_victimes = n())
-print(nb_victimes_par_accident)
+nb_victimes_par_accident
 
-#accidents 2024 c'est la meme que caracteristiques_2024, mais on a ajoute
-#le nombre de victimes par accident a cette dernière
+
+#accidents_2024 c'est la même que caracteristiques_2024, mais on a ajouté
+#le nombre de victimes par accident a cette dernière
 accidents_2024 = caracteristiques_2024 %>%
-  left_join(nb_victimes_par_accident, by = "Num_Acc") %>%
-  mutate (Nb_victimes = replace_na(Nb_victimes, 0))
+  left_join(nb_victimes_par_accident, by = "Num_Acc",)
+
+
+#on verifie s'il y a des champs vides, des champs NA, des champs N/A
+colSums(accidents_2024 == "")
+colSums(accidents_2024 == "N/A")
+colSums(is.na(accidents_2024))
+
+#mutate (Nb_victimes = replace_na(Nb_victimes, 0))
 
 head(accidents_2024)
 
@@ -39,5 +47,16 @@ accidents_2024 = accidents_2024 %>%
   #pour ne pas considerer les mois comme une variable quantitative
   saison = as.factor(saison)
 )
-
+accidents_2024$atm = as.factor(accidents_2024$atm)
 head(accidents_2024)
+
+summary(accidents_2024$Nb_victimes)
+sd(accidents_2024$Nb_victimes)
+
+ggplot(data = accidents_2024, aes(x = Nb_victimes)) + 
+  geom_bar(fill = 'steelblue', color = 'white') + 
+  scale_x_continuous (limits = c(0,10), breaks = 1:10) +
+  labs(title = "Nombre de victimes par accident",
+       x = "Nombre de victimes",
+       y = "Nombre d'accidents")
+
