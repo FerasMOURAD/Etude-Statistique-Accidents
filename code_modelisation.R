@@ -16,25 +16,20 @@ nb_victimes_par_accident = usagers_2024 %>%
   summarise(Nb_victimes = n())
 nb_victimes_par_accident
 
-
 #accidents_2024 c'est la même que caracteristiques_2024, mais on a ajouté
 #le nombre de victimes par accident a cette dernière
 accidents_2024 = caracteristiques_2024 %>%
-  left_join(nb_victimes_par_accident, by = "Num_Acc",)
+  left_join(nb_victimes_par_accident, by = "Num_Acc")
 
+accidents_2024$adr = NULL
 
 #on verifie s'il y a des champs vides, des champs NA, des champs N/A
 colSums(accidents_2024 == "")
 colSums(accidents_2024 == "N/A")
 colSums(is.na(accidents_2024))
 
-#mutate (Nb_victimes = replace_na(Nb_victimes, 0))
-
 head(accidents_2024)
 
-#on check les valeurs manquantes (s'il y en a)
-# valeurs_manquantes <- colSums(is.na(accidents_2024))
-# valeurs_manquantes
 
 #on cree la saisonnalite
 accidents_2024 = accidents_2024 %>%
@@ -45,7 +40,7 @@ accidents_2024 = accidents_2024 %>%
     mois %in% c(9,10,11) ~ "Automne"
   ),
   #pour ne pas considerer les mois comme une variable quantitative
-  saison = as.factor(saison)
+  # saison = as.factor(saison)
 )
 accidents_2024$atm = as.factor(accidents_2024$atm)
 head(accidents_2024)
@@ -55,7 +50,7 @@ sd(accidents_2024$Nb_victimes)
 
 ggplot(data = accidents_2024, aes(x = Nb_victimes)) + 
   geom_bar(fill = 'steelblue', color = 'white') + 
-  scale_x_continuous (limits = c(0,10), breaks = 1:10) +
+  # scale_x_continuous (limits = c(0,10), breaks = 1:10) +
   labs(title = "Nombre de victimes par accident",
        x = "Nombre de victimes",
        y = "Nombre d'accidents")
