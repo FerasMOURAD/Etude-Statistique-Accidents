@@ -48,10 +48,10 @@ head(accidents_2024)
 summary(accidents_2024$Nb_victimes)
 sd(accidents_2024$Nb_victimes)
 
-ggplot(data = accidents_2024, aes(x = Nb_victimes)) + 
+ggplot(data = accidents_2024, aes(y = Nb_victimes)) + 
   geom_bar(fill = 'steelblue', color = 'white') + 
   # scale_x_continuous (limits = c(0,10), breaks = 1:10) +
   labs(title = "Nombre de victimes par accident",
-       x = "Nombre de victimes",
-       y = "Nombre d'accidents")
+       y = "Nombre de victimes",
+       x = "Nombre d'accidents")
 
