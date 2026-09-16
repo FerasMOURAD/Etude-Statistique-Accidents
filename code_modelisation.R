@@ -40,7 +40,7 @@ accidents_2024 = accidents_2024 %>%
     mois %in% c(9,10,11) ~ "Automne"
   ),
   #pour ne pas considerer les mois comme une variable quantitative
-  # saison = as.factor(saison)
+  saison = as.factor(saison)
 )
 accidents_2024$atm = as.factor(accidents_2024$atm)
 head(accidents_2024)
@@ -48,10 +48,18 @@ head(accidents_2024)
 summary(accidents_2024$Nb_victimes)
 sd(accidents_2024$Nb_victimes)
 
-ggplot(data = accidents_2024, aes(y = Nb_victimes)) + 
-  geom_bar(fill = 'steelblue', color = 'white') + 
-  # scale_x_continuous (limits = c(0,10), breaks = 1:10) +
-  labs(title = "Nombre de victimes par accident",
+# l'analyse univariée : on représente le nombre de victimes par accident
+accidents_2024 %>%
+  count(Nb_victimes) %>%
+  ggplot() +
+  geom_rect(aes(ymin = Nb_victimes - 0.4, ymax = Nb_victimes + 0.4, xmin = 0.5, xmax = n),
+            fill = "steelblue", color = "white") +
+  scale_x_log10(limits = c(0.5, 50000), breaks = c(1, 10, 100, 1000, 10000),
+                labels = c("1", "10", "100", "1 000", "10 000")) +
+  scale_y_continuous(breaks = c(1, 5, 10, 15, 20, 30, 40, 50)) +
+  labs(title = "Distribution du nombre de victimes par accident",
        y = "Nombre de victimes",
-       x = "Nombre d'accidents")
+       x = "Nombre d'accidents (échelle log10)")
+
+
 
