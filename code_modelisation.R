@@ -63,3 +63,57 @@ accidents_2024 %>%
 
 
 
+
+#on extrait la date de l'accident
+accidents_2024$date = as.Date(
+  paste(accidents_2024$an, accidents_2024$mois, accidents_2024$jour, 
+  sep = "-"))
+
+accidents_2024$jour_semaine = factor(
+  weekdays(accidents_2024$date),
+  levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+  labels = c("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
+)
+
+
+# ANALYSE UNIVARIÉE DE TOUTES LES VARIABLES DE LA TABLE ACCIDENTS_2024
+
+# 1. VARIABLES TEMPORELLES
+# Répartition mensuelle
+table(accidents_2024$mois)
+round(prop.table(table(accidents_2024$mois)) * 100, 2)
+
+# Répartition par jour de la semaine
+table(accidents_2024$jour_semaine)
+round(prop.table(table(accidents_2024$jour_semaine)) * 100, 2)
+
+# 2. VARIABLES ENVIRONNEMENTALES
+# Luminosité (1 = Plein jour, 2 = Crépuscule/aube, 3 = Nuit sans éclairage, 5 = Nuit éclairée)
+table(accidents_2024$lum)
+round(prop.table(table(accidents_2024$lum)) * 100, 2)
+
+table(accidents_2024$atm)
+round(prop.table(table(accidents_2024$atm)) * 100, 2)
+
+table(accidents_2024$saison)
+round(prop.table(table(accidents_2024$saison)) * 100, 2)
+
+# 3. VARIABLES D'INFRASTRUCTURE ET DE COLLISION
+# Agglomération (1 = Hors agglomération / campagne-autoroute, 2 = En agglomération / ville)
+table(accidents_2024$agg)
+round(prop.table(table(accidents_2024$agg)) * 100, 2)
+
+# Type d'intersection (1 = Hors intersection, 2 = En X, 3 = En T, 6 = Rond-point)
+table(accidents_2024$int)
+round(prop.table(table(accidents_2024$int)) * 100, 2)
+
+# Type de collision (1 = Frontal, 2 = Arrière, 3 = Côté, 4 = En chaîne, 7 = Sans collision)
+table(accidents_2024$col)
+round(prop.table(table(accidents_2024$col)) * 100, 2)
+
+# 4. VARIABLE GÉOGRAPHIQUE
+# Top 10 des départements les plus accidentogènes
+top_10_dep = sort(table(accidents_2024$dep), decreasing = TRUE)[1:10]
+top_10_dep
+round(prop.table(top_10_dep) * 100, 2)
+
