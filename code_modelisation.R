@@ -117,7 +117,7 @@ accidents_2024 %>%
   scale_y_continuous(breaks = c(1, 5, 10, 15, 20, 30, 40, 50)) +
   labs(title = "Distribution du nombre de victimes par accident",
        y = "Nombre de victimes",
-       x = "Nombre d'accidents (échelle log10)")
+       x = "Nombre d'accidents")
 
 # VARIABLES TEMPORELLES
 
@@ -138,7 +138,12 @@ ggplot(accidents_2024 %>% filter(!is.na(mois)),
 # Répartition par jour de la semaine
 table(accidents_2024$jour_semaine)
 round(prop.table(table(accidents_2024$jour_semaine)) * 100, 2)
-
+ggplot(accidents_2024 %>% filter(!is.na(jour_semaine)), aes(x = jour_semaine)) +
+  geom_bar(fill = "#5C6BC0") +
+  labs(title = "Nombre d'accidents par jour de la semaine",
+       x = "Jour de la semaine", 
+       y = "Nombre d'accidents") +
+  theme_minimal()
 
 #heure
 ggplot(accidents_2024 %>% filter(!is.na(hrmn)), 
@@ -146,7 +151,7 @@ ggplot(accidents_2024 %>% filter(!is.na(hrmn)),
   geom_bar(fill = "#FF7043", color = "white") +
   scale_x_continuous(breaks = seq(0, 23, by = 2)) +
   labs(title = "Distribution des accidents par heure de la journée",
-       x = "Heure de la journée (0h à 23h)", 
+       x = "Heure de la journée", 
        y = "Nombre d'accidents") +
   theme_minimal()
 
@@ -240,7 +245,7 @@ ggplot(accidents_2024 %>%
                                  "Autre collision", 
                                  "Sans collision")))) +
   geom_bar(fill = "#AB47BC") +
-  labs(title = "Types de collision (regroupés)",
+  labs(title = "Types de collision",
        x = "", y = "Nombre d'accidents") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 15, hjust = 1))
