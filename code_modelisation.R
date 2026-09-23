@@ -9,6 +9,18 @@ lieux_2024 = read.csv("Ressources/lieux-2024.csv", sep = ";", header = TRUE)
 vehicules_2024 = read.csv("Ressources/vehicules-2024.csv", sep = ";", header = TRUE)
 usagers_2024 = read.csv("Ressources/usagers-2024.csv", sep = ";", header = TRUE)
 
+# Chargement de la population INSEE par département
+population = read.csv("Ressources/Insee.csv") %>%
+  select(
+    dep = Code.département,
+    nom_dep = Nom.du.département,
+    population = Population.municipale
+  ) %>%
+  mutate(
+    dep = sub("^0+", "", as.character(dep)),
+    population = as.numeric(gsub(",", "", population))
+  )
+
 #on calcule le nb de victimes par accident
 nb_victimes_par_accident = usagers_2024 %>%
   group_by(Num_Acc) %>%
@@ -34,6 +46,7 @@ accidents_2024 <- accidents_2024 %>%
   filter(col != -1)
 
 
+
 #on cree la saisonnalite
 accidents_2024 = accidents_2024 %>%
   mutate(saison = case_when(
@@ -52,7 +65,7 @@ summary(accidents_2024$Nb_victimes)
 round(sd(accidents_2024$Nb_victimes), 2)
 
 
-
+accidents_2024 = accidents_2024 %>% left_join(population, by = "dep")
 
 #on met des labels pour les categories.
 # Conditions atmosphériques (atm)
@@ -66,7 +79,7 @@ lab_lum <- c("1" = "Plein jour", "2" = "Crépuscule/aube",
              "5" = "Nuit éclairage allumé")
 
 # Type de collision (col)
-lab_col <- c("1" = "Deux véh. - frontale",
+lab_col = c("1" = "Deux véh. - frontale",
              "2" = "Deux véh. - par l'arrière",
              "3" = "Deux véh. - par le côté",
              "4" = "Trois véh.+ en chaîne",
@@ -74,29 +87,9 @@ lab_col <- c("1" = "Deux véh. - frontale",
              "6" = "Autre collision",
              "7" = "Sans collision")
 
-lab_int <- c("1" = "Hors intersection", "2" = "En X", "3" = "En T",
+lab_int = c("1" = "Hors intersection", "2" = "En X", "3" = "En T",
              "4" = "En Y", "5" = "> 4 branches", "6" = "Rond-point",
              "7" = "Place", "8" = "Passage à niveau", "9" = "Autre")
-
-
-
-
-
-# l'analyse univariée : 
-# on représente le nombre de victimes par accident (Boxplot)
-accidents_2024 %>%
-  count(Nb_victimes) %>%
-  ggplot() +
-  geom_rect(aes(ymin = Nb_victimes - 0.4, ymax = Nb_victimes + 0.4, xmin = 0.5, xmax = n),
-            fill = "steelblue", color = "white") +
-  scale_x_log10(limits = c(0.5, 50000), breaks = c(1, 10, 100, 1000, 10000),
-                labels = c("1", "10", "100", "1 000", "10 000")) +
-  scale_y_continuous(breaks = c(1, 5, 10, 15, 20, 30, 40, 50)) +
-  labs(title = "Distribution du nombre de victimes par accident",
-       y = "Nombre de victimes",
-       x = "Nombre d'accidents (échelle log10)")
-
-
 
 
 #on extrait la date de l'accident
@@ -113,7 +106,21 @@ accidents_2024$jour_semaine = factor(
 
 # ANALYSE UNIVARIÉE DE TOUTES LES VARIABLES DE LA TABLE ACCIDENTS_2024
 
-# 1. VARIABLES TEMPORELLES
+# on représente le nombre de victimes par accident
+accidents_2024 %>%
+  count(Nb_victimes) %>%
+  ggplot() +
+  geom_rect(aes(ymin = Nb_victimes - 0.4, ymax = Nb_victimes + 0.4, xmin = 0.5, xmax = n),
+            fill = "steelblue", color = "white") +
+  scale_x_log10(limits = c(0.5, 50000), breaks = c(1, 10, 100, 1000, 10000),
+                labels = c("1", "10", "100", "1 000", "10 000")) +
+  scale_y_continuous(breaks = c(1, 5, 10, 15, 20, 30, 40, 50)) +
+  labs(title = "Distribution du nombre de victimes par accident",
+       y = "Nombre de victimes",
+       x = "Nombre d'accidents (échelle log10)")
+
+# VARIABLES TEMPORELLES
+
 # Répartition mensuelle
 table(accidents_2024$mois)
 round(prop.table(table(accidents_2024$mois)) * 100, 2)
@@ -241,17 +248,19 @@ ggplot(accidents_2024 %>%
  
 
 # 4. VARIABLE GÉOGRAPHIQUE
-# Top 10 des départements les plus accidentogènes
+# Top 20 départements les plus accidentogènes pour 100 000 habitants
 top_dep <- accidents_2024 %>%
   filter(!is.na(dep)) %>%
-  count(dep, sort = TRUE) %>%
-  slice_head(n = 15)
+  count(dep, nom_dep, population, name = "nb_accidents") %>%
+  mutate(ratio = round((nb_accidents / population) * 100000, 2)) %>%
+  arrange(desc(ratio)) %>%
+  slice_head(n = 20)
 print(top_dep)
 
-ggplot(top_dep, aes(x = reorder(dep, n), y = n)) +
+ggplot(top_dep, aes(x = reorder(nom_dep, ratio), y = ratio)) +
   geom_col(fill = "#AB47BC") +
   coord_flip() +
-  labs(title = "Top 15 des départements les plus accidentogènes (2024)",
-       x = "Département", y = "Nombre d'accidents") +
+  labs(title = "Top 20 départements les plus accidentogènes",
+       x = "Département", y = "Nombre d'accidents pour 100 000 habitants") +
   theme_minimal()
 
