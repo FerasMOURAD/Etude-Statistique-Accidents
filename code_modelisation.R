@@ -269,3 +269,5 @@ ggplot(top_dep, aes(x = reorder(nom_dep, ratio), y = ratio)) +
        x = "Département", y = "Nombre d'accidents pour 100 000 habitants") +
   theme_minimal()
 
+
+
