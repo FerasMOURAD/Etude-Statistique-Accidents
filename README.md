@@ -18,27 +18,30 @@ L'étude s'articule autour de deux volets complémentaires :
 
 ```text
 Etude-Statistique-Accidents/
-├── preparation_donnees.R    # Pipeline ETL : nettoyage, imputations et enrichissement
-├── code_modelisation.R      # Analyse statistique, tests d'hypothèses et modèles sous R
-├── Data_mining.ipynb        # Volet Machine Learning / Data Mining sous Python
+├── Code_R/
+│   ├── preparation_donnees.R    # Pipeline ETL : nettoyage, imputations et enrichissement
+│   └── code_modelisation.R      # Analyse statistique, tests d'hypothèses et modèles sous R
 │
-├── Ressources/              # Données brutes et consolidées
-│   ├── caract-2024.csv      # Caractéristiques générales des accidents (météo, luminosité, localisation)
-│   ├── lieux-2024.csv       # Infrastructure routière et VMA (Vitesse Maximale Autorisée)
-│   ├── vehicules-2024.csv   # Véhicules impliqués et typologies
-│   ├── usagers-2024.csv     # Usagers, gravité des blessures et équipements de sécurité
-│   ├── Insee.csv            # Population légale 2024 par département (normalisation de l'exposition)
-│   └── accidents_2024.csv   # Table maîtresse enrichie et prête pour la modélisation
+├── Code_Python/
+│   └── Data_mining.ipynb        # Volet Machine Learning / Data Mining sous Python
 │
-├── UML/                     # Rétroconception relationnelle et modèle décisionnel
-├── Rplots/                  # Graphiques et visualisations générés (ignoré dans Git)
-├── .gitignore               # Exclusion des fichiers temporaires et graphiques locaux
-└── README.md                # Documentation générale du projet
+├── Ressources/                  # Données brutes et consolidées
+│   ├── caract-2024.csv          # Caractéristiques générales des accidents (météo, luminosité, localisation)
+│   ├── lieux-2024.csv           # Infrastructure routière et VMA (Vitesse Maximale Autorisée)
+│   ├── vehicules-2024.csv       # Véhicules impliqués et typologies
+│   ├── usagers-2024.csv         # Usagers, gravité des blessures et équipements de sécurité
+│   ├── Insee.csv                # Population légale 2024 par département (normalisation de l'exposition)
+│   └── accidents_2024.csv       # Table maîtresse enrichie et prête pour la modélisation
+│
+├── UML/                         # Rétroconception relationnelle et modèle décisionnel
+├── Rplots/                      # Graphiques et visualisations générés (ignoré dans Git)
+├── .gitignore                   # Exclusion des fichiers temporaires et graphiques locaux
+└── README.md                    # Documentation générale du projet
 ```
 
 ---
 
-## ⚙️ Méthodologie et Préparation des Données (`preparation_donnees.R`)
+## ⚙️ Méthodologie et Préparation des Données (`Code_R/preparation_donnees.R`)
 
 Le script de préparation assure la reproductibilité et la qualité des données en amont de toute modélisation :
 - **Variable cible (`Nb_victimes`)** : Calculée à partir de la table `usagers` en comptabilisant uniquement les personnes non indemnes (`grav != 1`).
@@ -59,19 +62,19 @@ Le script de préparation assure la reproductibilité et la qualité des donnée
 ### 1. Préparation des données (R)
 Exécuter le script de nettoyage et d'enrichissement. Celui-ci génère automatiquement le fichier consolidé `Ressources/accidents_2024.csv` :
 ```r
-source("preparation_donnees.R")
+source("Code_R/preparation_donnees.R")
 ```
 
 ### 2. Analyses statistiques et graphiques (R)
 Lancer le script principal pour reproduire les visualisations, les tests de Kruskal-Wallis et les analyses spatiales :
 ```r
-source("code_modelisation.R")
+source("Code_R/code_modelisation.R")
 ```
 
 ### 3. Modélisation prédictive (Python)
-Ouvrir le notebook Jupyter pour évaluer les modèles de Machine Learning sur le dataset préparé :
+Ouvrir le notebook Jupyter situé dans `Code_Python/` pour évaluer les modèles de Machine Learning sur le dataset préparé :
 ```bash
-jupyter notebook Data_mining.ipynb
+jupyter notebook Code_Python/Data_mining.ipynb
 ```
 
 ---

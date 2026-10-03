@@ -2,10 +2,13 @@
 # SCRIPT PRINCIPAL : ANALYSES STATISTIQUES ET MODÉLISATION
 # ==============================================================================
 
-setwd("/home/fm/Desktop/Me/Uni_Stuff/BUTSD/Etude-Statistique-Accidents/")
+# Se positionner sur la racine du projet si exécuté depuis Code_R
+if (basename(getwd()) == "Code_R") {
+  setwd("..")
+}
 
 # 1. Chargement automatique des données nettoyées et enrichies
-source("preparation_donnees.R")
+source("Code_R/preparation_donnees.R")
 
 library(ggplot2)
 library(dplyr)

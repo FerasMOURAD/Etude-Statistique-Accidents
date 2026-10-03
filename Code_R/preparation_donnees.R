@@ -2,6 +2,12 @@
 # PIPELINE DE PRÉPARATION ET D'ENRICHISSEMENT DES DONNÉES BAAC 2024
 # ==============================================================================
 
+# Se positionner sur la racine du projet si exécuté depuis Code_R
+if (basename(getwd()) == 'Code_R') {
+  setwd('..')
+}
+
+
 library(dplyr)
 library(tidyr)
 library(readr)
