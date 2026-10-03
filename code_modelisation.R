@@ -1,108 +1,19 @@
-library(dplyr)
-library(ggplot2)
-library(tidyr)
+# ==============================================================================
+# SCRIPT PRINCIPAL : ANALYSES STATISTIQUES ET MODÉLISATION
+# ==============================================================================
 
 setwd("/home/fm/Desktop/Me/Uni_Stuff/BUTSD/Etude-Statistique-Accidents/")
 
-caracteristiques_2024 = read.csv("Ressources/caract-2024.csv", sep = ";", header = TRUE)
-lieux_2024 = read.csv("Ressources/lieux-2024.csv", sep = ";", header = TRUE)
-vehicules_2024 = read.csv("Ressources/vehicules-2024.csv", sep = ";", header = TRUE)
-usagers_2024 = read.csv("Ressources/usagers-2024.csv", sep = ";", header = TRUE)
+# 1. Chargement automatique des données nettoyées et enrichies
+source("preparation_donnees.R")
 
-# Chargement de la population INSEE par département
-population = read.csv("Ressources/Insee.csv") %>%
-  select(
-    dep = Code.département,
-    nom_dep = Nom.du.département,
-    population = Population.municipale
-  ) %>%
-  mutate(
-    dep = sub("^0+", "", as.character(dep)),
-    population = as.numeric(gsub(",", "", population))
-  )
+library(ggplot2)
+library(dplyr)
+library(tidyr)
 
-#on calcule le nb de victimes par accident
-nb_victimes_par_accident = usagers_2024 %>%
-  group_by(Num_Acc) %>%
-  filter(grav != 1) %>%
-  summarise(Nb_victimes = n())
-nb_victimes_par_accident
-
-#accidents_2024 c'est la même que caracteristiques_2024, mais on a ajouté
-#le nombre de victimes par accident a cette dernière
-accidents_2024 = caracteristiques_2024 %>%
-  left_join(nb_victimes_par_accident, by = "Num_Acc")
-
-accidents_2024$adr = NULL
-
-#on verifie s'il y a des champs vides, des champs NA, des champs N/A
-colSums(accidents_2024 == "")
-colSums(accidents_2024 == "N/A")
-colSums(is.na(accidents_2024))
-colSums(accidents_2024 == -1, na.rm = T)
-
-# Suppression des 6 accidents avec collision non renseignée (-1)
-accidents_2024 <- accidents_2024 %>%
-  filter(col != -1)
-
-
-
-#on cree la saisonnalite
-accidents_2024 = accidents_2024 %>%
-  mutate(saison = case_when(
-    mois %in% c(12,1,2) ~ "Hiver",
-    mois %in% c(3,4,5) ~ "Printemps",
-    mois %in% c(6,7,8) ~ "Ete",
-    mois %in% c(9,10,11) ~ "Automne"
-  ),
-  #pour ne pas considerer les mois comme une variable quantitative
-  saison = as.factor(saison)
-)
-accidents_2024$atm = as.factor(accidents_2024$atm)
-head(accidents_2024)
-
-summary(accidents_2024$Nb_victimes)
-round(sd(accidents_2024$Nb_victimes), 2)
-
-
-accidents_2024 = accidents_2024 %>% left_join(population, by = "dep")
-
-#on met des labels pour les categories.
-# Conditions atmosphériques (atm)
-lab_atm <- c("1" = "Normale", "2" = "Pluie légère", "3" = "Pluie forte",
-             "4" = "Neige/Grêle", "5" = "Brouillard", "6" = "Vent fort",
-             "7" = "Temps éblouissant", "8" = "Temps nuageux", "9" = "Autre")
-
-# Conditions de luminosité (lum)
-lab_lum <- c("1" = "Plein jour", "2" = "Crépuscule/aube",
-             "3" = "Nuit sans éclairage", "4" = "Nuit avec éclairage",
-             "5" = "Nuit éclairage allumé")
-
-# Type de collision (col)
-lab_col = c("1" = "Deux véh. - frontale",
-             "2" = "Deux véh. - par l'arrière",
-             "3" = "Deux véh. - par le côté",
-             "4" = "Trois véh.+ en chaîne",
-             "5" = "Trois véh.+ conf. multiple",
-             "6" = "Autre collision",
-             "7" = "Sans collision")
-
-lab_int = c("1" = "Hors intersection", "2" = "En X", "3" = "En T",
-             "4" = "En Y", "5" = "> 4 branches", "6" = "Rond-point",
-             "7" = "Place", "8" = "Passage à niveau", "9" = "Autre")
-
-
-#on extrait la date de l'accident
-accidents_2024$date = as.Date(
-  paste(accidents_2024$an, accidents_2024$mois, accidents_2024$jour, 
-  sep = "-"))
-
-accidents_2024$jour_semaine = factor(
-  weekdays(accidents_2024$date),
-  levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
-  labels = c("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
-)
-
+# ------------------------------------------------------------------------------
+# 2. ANALYSES ET GRAPHES
+# ------------------------------------------------------------------------------
 
 # ANALYSE UNIVARIÉE DE TOUTES LES VARIABLES DE LA TABLE ACCIDENTS_2024
 
@@ -118,6 +29,10 @@ accidents_2024 %>%
   labs(title = "Distribution du nombre de victimes par accident",
        y = "Nombre de victimes",
        x = "Nombre d'accidents")
+
+
+
+
 
 # VARIABLES TEMPORELLES
 

@@ -1,1 +1,4 @@
 Rplots/
+*.bak
+*.Rdata
+*.Rhistory
