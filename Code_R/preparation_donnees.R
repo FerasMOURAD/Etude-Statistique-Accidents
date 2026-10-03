@@ -70,7 +70,7 @@ accidents_2024 <- accidents_2024 %>%
     atm = as.factor(atm)
   )
 
-# Date, jour de la semaine et heure numérique
+# Date et jour de la semaine
 accidents_2024$date <- as.Date(
   paste(accidents_2024$an, accidents_2024$mois, accidents_2024$jour, sep = "-")
 )
@@ -81,7 +81,9 @@ accidents_2024$jour_semaine <- factor(
   labels = c("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
 )
 
+# Extraction de l'heure numérique et suppression de hrmn (texte brut)
 accidents_2024$heure <- as.numeric(substr(accidents_2024$hrmn, 1, 2))
+accidents_2024$hrmn  <- NULL
 
 # Jointure population (appariement 100% propre avec les codes 01-09 préservés)
 accidents_2024 <- accidents_2024 %>% left_join(population, by = "dep")
@@ -154,8 +156,6 @@ usagers_acc <- usagers_2024 %>%
   summarise(
     implique_pieton = as.integer(any(catu == 3)),
     defaut_securite = as.integer(any(secu1 == 0)), # 1 si au moins un usager sans ceinture/casque
-    acc_mortel      = as.integer(any(grav == 2)),  # 1 si au moins 1 tué
-    acc_grave       = as.integer(any(grav %in% c(2, 3))), # 1 si tué ou hospitalisé
     .groups = "drop"
   )
 
@@ -176,9 +176,7 @@ accidents_2024 <- accidents_2024 %>%
     implique_poids_lourd    = coalesce(implique_poids_lourd, 0L),
     implique_transp_commun  = coalesce(implique_transp_commun, 0L),
     implique_pieton         = coalesce(implique_pieton, 0L),
-    defaut_securite         = coalesce(defaut_securite, 0L),
-    acc_mortel              = coalesce(acc_mortel, 0L),
-    acc_grave               = coalesce(acc_grave, 0L)
+    defaut_securite         = coalesce(defaut_securite, 0L)
   )
 
 # Export pour le notebook Python (Data Mining)
