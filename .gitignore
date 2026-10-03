@@ -3,3 +3,4 @@ Rplots/
 *.Rdata
 *.Rhistory
 .vscode/
+.RData
