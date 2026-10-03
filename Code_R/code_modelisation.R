@@ -64,8 +64,8 @@ ggplot(accidents_2024 %>% filter(!is.na(jour_semaine)), aes(x = jour_semaine)) +
   theme_minimal()
 
 #heure
-ggplot(accidents_2024 %>% filter(!is.na(hrmn)), 
-       aes(x = as.numeric(substr(hrmn, 1, 2)))) +
+ggplot(accidents_2024 %>% filter(!is.na(heure)), 
+       aes(x = heure)) +
   geom_bar(fill = "#FF7043", color = "white") +
   scale_x_continuous(breaks = seq(0, 23, by = 2)) +
   labs(title = "Distribution des accidents par heure de la journée",

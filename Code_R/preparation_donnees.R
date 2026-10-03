@@ -3,10 +3,9 @@
 # ==============================================================================
 
 # Se positionner sur la racine du projet si exécuté depuis Code_R
-if (basename(getwd()) == 'Code_R') {
-  setwd('..')
+if (basename(getwd()) == "Code_R") {
+  setwd("..")
 }
-
 
 library(dplyr)
 library(tidyr)
@@ -21,6 +20,7 @@ vehicules_2024        <- read.csv("Ressources/vehicules-2024.csv", sep = ";", he
 usagers_2024          <- read.csv("Ressources/usagers-2024.csv", sep = ";", header = TRUE)
 
 # Chargement et nettoyage de la population INSEE par département
+# Conservation du zéro initial ("01" à "09") pour correspondre à caract-2024
 population <- read.csv("Ressources/Insee.csv") %>%
   select(
     dep = Code.département,
@@ -28,19 +28,19 @@ population <- read.csv("Ressources/Insee.csv") %>%
     population = Population.municipale
   ) %>%
   mutate(
-    dep = sub("^0+", "", as.character(dep)),
-    population = as.numeric(gsub(",", "", population))
+    dep = trimws(as.character(dep)),
+    population = as.numeric(gsub("[, ]", "", population))
   )
 
 # ------------------------------------------------------------------------------
-# 2. Variable Cible : Nombre de victimes par accident
+# 2. Variable Cible : Nombre de victimes par accident (usagers non indemnes)
 # ------------------------------------------------------------------------------
 cat("--> [2/6] Calcul de la variable cible (Nb_victimes)...\n")
 
 nb_victimes_par_accident <- usagers_2024 %>%
   group_by(Num_Acc) %>%
   filter(grav != 1) %>% # grav 1 = indemne
-  summarise(Nb_victimes = n())
+  summarise(Nb_victimes = n(), .groups = "drop")
 
 accidents_2024 <- caracteristiques_2024 %>%
   left_join(nb_victimes_par_accident, by = "Num_Acc") %>%
@@ -57,7 +57,7 @@ accidents_2024 <- accidents_2024 %>%
 # ------------------------------------------------------------------------------
 cat("--> [3/6] Variables temporelles et labels...\n")
 
-# Saisonnalité
+# Saisonnalité ordonnée chronologiquement
 accidents_2024 <- accidents_2024 %>%
   mutate(
     saison = case_when(
@@ -66,11 +66,11 @@ accidents_2024 <- accidents_2024 %>%
       mois %in% c(6, 7, 8)   ~ "Ete",
       mois %in% c(9, 10, 11) ~ "Automne"
     ),
-    saison = as.factor(saison),
+    saison = factor(saison, levels = c("Hiver", "Printemps", "Ete", "Automne")),
     atm = as.factor(atm)
   )
 
-# Date et jour de la semaine
+# Date, jour de la semaine et heure numérique
 accidents_2024$date <- as.Date(
   paste(accidents_2024$an, accidents_2024$mois, accidents_2024$jour, sep = "-")
 )
@@ -81,7 +81,9 @@ accidents_2024$jour_semaine <- factor(
   labels = c("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
 )
 
-# Jointure population
+accidents_2024$heure <- as.numeric(substr(accidents_2024$hrmn, 1, 2))
+
+# Jointure population (appariement 100% propre avec les codes 01-09 préservés)
 accidents_2024 <- accidents_2024 %>% left_join(population, by = "dep")
 
 # Dictionnaires de labels pour les graphiques
@@ -108,7 +110,7 @@ lab_int <- c("1" = "Hors intersection", "2" = "En X", "3" = "En T",
 # ------------------------------------------------------------------------------
 # 4. Imputation de la Vitesse Maximale Autorisée (vma)
 # ------------------------------------------------------------------------------
-cat("--> [4/6] Imputation de la VMA (règle métier & correction typos)...\n")
+cat("--> [4/6] Imputation de la VMA (règle métier & dédoublonnage des carrefours)...\n")
 
 vma_acc <- lieux_2024 %>%
   select(Num_Acc, vma) %>%
@@ -126,12 +128,14 @@ vma_acc <- lieux_2024 %>%
       TRUE        ~ 50
     )
   ) %>%
-  select(Num_Acc, vma)
+  # Dédoublonnage des intersections : retenir la vitesse max engagée
+  group_by(Num_Acc) %>%
+  summarise(vma = max(vma), .groups = "drop")
 
 # ------------------------------------------------------------------------------
-# 5. Enrichissement accidents_2024
+# 5. Enrichissement Véhicules (Cas A) et Usagers
 # ------------------------------------------------------------------------------
-cat("--> [5/6] Enrichissement véhicules et usagers. de la table.\n")
+cat("--> [5/6] Enrichissement véhicules et usagers...\n")
 
 vehic_acc <- vehicules_2024 %>%
   group_by(Num_Acc) %>%
@@ -150,11 +154,13 @@ usagers_acc <- usagers_2024 %>%
   summarise(
     implique_pieton = as.integer(any(catu == 3)),
     defaut_securite = as.integer(any(secu1 == 0)), # 1 si au moins un usager sans ceinture/casque
+    acc_mortel      = as.integer(any(grav == 2)),  # 1 si au moins 1 tué
+    acc_grave       = as.integer(any(grav %in% c(2, 3))), # 1 si tué ou hospitalisé
     .groups = "drop"
   )
 
 # ------------------------------------------------------------------------------
-# 6. Jointure finale & Export pour Python
+# 6. Jointure finale & Export
 # ------------------------------------------------------------------------------
 cat("--> [6/6] Finalisation de la table accidents_2024...\n")
 
@@ -170,10 +176,12 @@ accidents_2024 <- accidents_2024 %>%
     implique_poids_lourd    = coalesce(implique_poids_lourd, 0L),
     implique_transp_commun  = coalesce(implique_transp_commun, 0L),
     implique_pieton         = coalesce(implique_pieton, 0L),
-    defaut_securite         = coalesce(defaut_securite, 0L)
+    defaut_securite         = coalesce(defaut_securite, 0L),
+    acc_mortel              = coalesce(acc_mortel, 0L),
+    acc_grave               = coalesce(acc_grave, 0L)
   )
 
 # Export pour le notebook Python (Data Mining)
 write.csv(accidents_2024, "Ressources/accidents_2024.csv", row.names = FALSE)
 
-cat("--> SUCCÈS : Données préparées et exportées dans Ressources/accidents_2024.csv !\n")
+cat(sprintf("--> SUCCÈS : %d accidents préparés et exportés dans Ressources/accidents_2024.csv !\n", nrow(accidents_2024)))
