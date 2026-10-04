@@ -20,7 +20,6 @@ vehicules_2024        <- read.csv("Ressources/vehicules-2024.csv", sep = ";", he
 usagers_2024          <- read.csv("Ressources/usagers-2024.csv", sep = ";", header = TRUE)
 
 # Chargement et nettoyage de la population INSEE par département
-# Conservation du zéro initial ("01" à "09") pour correspondre à caract-2024
 population <- read.csv("Ressources/Insee.csv") %>%
   select(
     dep = Code.département,
@@ -69,6 +68,11 @@ accidents_2024 <- accidents_2024 %>%
     saison = factor(saison, levels = c("Hiver", "Printemps", "Ete", "Automne")),
     atm = as.factor(atm)
   )
+
+
+# Encodage du departement
+accidents_2024$dep_code <- as.integer(as.factor(accidents_2024$dep))
+
 
 # Date et jour de la semaine
 accidents_2024$date <- as.Date(
