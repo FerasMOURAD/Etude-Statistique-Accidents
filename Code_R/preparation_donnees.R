@@ -51,9 +51,9 @@ accidents_2024$adr <- NULL
 accidents_2024 <- accidents_2024 %>%
   filter(col != -1)
 
-# ------------------------------------------------------------------------------
+
 # 3. Variables temporelles et Labels des catégories
-# ------------------------------------------------------------------------------
+
 cat("--> [3/6] Variables temporelles et labels...\n")
 
 # Saisonnalité ordonnée chronologiquement
@@ -74,11 +74,14 @@ accidents_2024 <- accidents_2024 %>%
 accidents_2024$dep_code <- as.integer(as.factor(accidents_2024$dep))
 
 
-# Date et jour de la semaine
+# Création de variables temporelles
+
+# Date
 accidents_2024$date <- as.Date(
   paste(accidents_2024$an, accidents_2024$mois, accidents_2024$jour, sep = "-")
 )
 
+# Jour de la semaine
 accidents_2024$jour_semaine <- factor(
   weekdays(accidents_2024$date),
   levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
@@ -91,6 +94,7 @@ accidents_2024$hrmn  <- NULL
 
 # Jointure population (appariement 100% propre avec les codes 01-09 préservés)
 accidents_2024 <- accidents_2024 %>% left_join(population, by = "dep")
+
 
 # Dictionnaires de labels pour les graphiques
 lab_atm <- c("1" = "Normale", "2" = "Pluie légère", "3" = "Pluie forte",
@@ -113,9 +117,10 @@ lab_int <- c("1" = "Hors intersection", "2" = "En X", "3" = "En T",
              "4" = "En Y", "5" = "> 4 branches", "6" = "Rond-point",
              "7" = "Place", "8" = "Passage à niveau", "9" = "Autre")
 
-# ------------------------------------------------------------------------------
+
+
 # 4. Imputation de la Vitesse Maximale Autorisée (vma)
-# ------------------------------------------------------------------------------
+
 cat("--> [4/6] Imputation de la VMA (règle métier & dédoublonnage des carrefours)...\n")
 
 vma_acc <- lieux_2024 %>%
@@ -138,9 +143,10 @@ vma_acc <- lieux_2024 %>%
   group_by(Num_Acc) %>%
   summarise(vma = max(vma), .groups = "drop")
 
-# ------------------------------------------------------------------------------
+
+
 # 5. Enrichissement Véhicules (Cas A) et Usagers
-# ------------------------------------------------------------------------------
+
 cat("--> [5/6] Enrichissement véhicules et usagers...\n")
 
 vehic_acc <- vehicules_2024 %>%
@@ -163,9 +169,10 @@ usagers_acc <- usagers_2024 %>%
     .groups = "drop"
   )
 
-# ------------------------------------------------------------------------------
+
+
 # 6. Jointure finale & Export
-# ------------------------------------------------------------------------------
+
 cat("--> [6/6] Finalisation de la table accidents_2024...\n")
 
 accidents_2024 <- accidents_2024 %>%
