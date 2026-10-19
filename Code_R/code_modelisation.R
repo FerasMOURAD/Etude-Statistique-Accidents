@@ -819,7 +819,7 @@ cat("  3.3 CROISEMENT QUANTITATIVE x QUANTITATIVE           \n")
 cat("=======================================================\n")
 
 # ------------------------------------------------------------------------------
-# 3.3.1 Vitesse Maximale Autorisée (VMA continue) vs Sévérité (Nb_victimes)
+# 3.3.1 Vitesse Maximale Autorisée (VMA continue) vs Nb_victimes
 # ------------------------------------------------------------------------------
 cat("\n=== 3.3.1 VMA continue x Nb_victimes ===\n")
 
@@ -844,7 +844,7 @@ ggplot(accidents_modele, aes(x = vma, y = Nb_victimes)) +
   theme_minimal(base_size = 12)
 
 # ------------------------------------------------------------------------------
-# 3.3.2 Âge moyen des usagers vs Sévérité (Nb_victimes)
+# 3.3.2 Âge moyen des usagers vs Nb_victimes
 # ------------------------------------------------------------------------------
 cat("\n=== 3.3.2 Âge moyen des usagers x Nb_victimes ===\n")
 
@@ -869,7 +869,7 @@ ggplot(accidents_modele, aes(x = age_moyen_usagers, y = Nb_victimes)) +
   theme_minimal(base_size = 12)
 
 # ------------------------------------------------------------------------------
-# 3.3.3 Nombre de véhicules impliqués vs Sévérité (Nb_victimes)
+# 3.3.3 Nombre de véhicules impliqués vs Nb_victimes
 # ------------------------------------------------------------------------------
 cat("\n=== 3.3.3 Nombre de véhicules impliqués x Nb_victimes ===\n")
 
@@ -881,11 +881,23 @@ cor_veh_spearman <- cor.test(accidents_modele$nb_vehicules_impliquees, accidents
 cat("\n* Test de corrélation de rang de Spearman :\n")
 print(cor_veh_spearman)
 
+# Graphique de la relation Nombre de véhicules vs Nombre de victimes
+ggplot(accidents_modele, aes(x = nb_vehicules_impliquees, y = Nb_victimes)) +
+  geom_jitter(width = 0.25, height = 0.25, alpha = 0.08, color = "#8E24AA") +
+  geom_smooth(method = "lm", color = "#D32F2F", se = FALSE, linewidth = 1) +
+  scale_x_continuous(breaks = 1:11) +
+  labs(
+    title = "Relation entre le nombre de véhicules impliqués et le nombre de victimes",
+    x = "Nombre de véhicules impliqués dans l'accident",
+    y = "Nombre de victimes par accident"
+  ) +
+  theme_minimal(base_size = 12)
+
 
 # ==============================================================================
 # SECTION 4 : ANALYSE STATISTIQUE SPATIALE ET AUTOCORRÉLATION (INDICE DE MORAN)
 # ==============================================================================
-#A REVOIR
+
 cat("\n=======================================================\n")
 cat("      SECTION 4 : ANALYSE STATISTIQUE SPATIALE         \n")
 cat("=======================================================\n")
@@ -893,7 +905,7 @@ cat("=======================================================\n")
 # ------------------------------------------------------------------------------
 # 4.1 Agrégation départementale métropolitaine et centroïdes
 # ------------------------------------------------------------------------------
-# Exclusion stricte des DROM-COM pour respecter la contiguïté géographique terrestre
+# Exclusion des DROM-COM pour respecter la contiguïté géographique terrestre
 dep_spat <- accidents_modele %>%
   filter(!grepl("^9[78]", dep)) %>%
   group_by(dep, nom_dep) %>%
@@ -957,6 +969,9 @@ ggplot() +
     plot.subtitle   = element_text(size = 11, hjust = 0.5, color = "gray30"),
     legend.position = "right"
   )
+
+
+
 
 # ==============================================================================
 # SECTION 5 : MODÉLISATION LINÉAIRE MULTIPLE ET SÉLECTION DE VARIABLES (PARTIES 3 & 4)
