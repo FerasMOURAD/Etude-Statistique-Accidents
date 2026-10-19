@@ -220,7 +220,4 @@ p12 <- ggplot(data.frame(Fitted = valeurs_ajustees, Residuals = residus), aes(x 
   theme_rapport
 ggsave("Rapport/figures/diagnostic_residus.png", p12, width = 8, height = 4.8, dpi = 300)
 
-# Copier également à la racine de Rapport pour flexibilité d inclusion LaTeX
-file.copy(list.files("Rapport/figures", full.names = TRUE), "Rapport/", overwrite = TRUE)
-
-cat("--> Toutes les figures ont été générées et exportées avec succès dans Rapport/figures/ et Rapport/ !\n")
+cat("--> Toutes les figures ont été générées et exportées avec succès dans Rapport/figures/ !\n")
