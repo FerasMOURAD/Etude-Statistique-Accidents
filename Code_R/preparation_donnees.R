@@ -56,9 +56,9 @@ accidents_2024 <- caracteristiques_2024 %>%
 # Suppression de la colonne adresse non exploitable statistiquement
 accidents_2024$adr <- NULL
 
-# Suppression des 6 accidents sans type de collision valide (col == -1)
+# Recodage des 6 accidents sans type de collision valide (col == -1) en 7 ("Sans collision") selon consigne
 accidents_2024 <- accidents_2024 %>%
-  filter(col != -1)
+  mutate(col = ifelse(col == -1, 7, col))
 
 # ==============================================================================
 # ÉTAPE 3 : VARIABLES TEMPORELLES ET LABELS CATÉGORIELS

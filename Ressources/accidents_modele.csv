@@ -952,6 +952,7 @@
 202400000951,"64","Pyrénées-Atlantiques",43.4771,-1.5448,TRUE,693027,1,2024-02-12,2,"Hiver","Lundi",17,"Plein jour","Normale","Normale",0,"En agglomération",1,50,"Deux véh. - Arrière / Côté",0,0,2,1,1,0,0,0,0,0,0,0,1,48
 202400000952,"64","Pyrénées-Atlantiques",43.50647,-1.48559,TRUE,693027,3,2024-02-11,2,"Hiver","Dimanche",19,"Nuit éclairage allumé","Normale","Mouillee / Inondee",1,"En agglomération",1,50,"Deux véh. - Arrière / Côté",0,0,2,1,0,0,0,0,0,0,0,0,1,55.7
 202400000953,"61","Orne",48.750378,-0.563178,TRUE,276973,1,2024-02-08,2,"Hiver","Jeudi",18,"Nuit éclairage allumé","Pluie forte","Mouillee / Inondee",1,"En agglomération",1,50,"Autre collision",0,0,1,1,0,0,0,0,1,1,0,0,1,42
+202400000954,"59","Nord",50.68459,3.15023,TRUE,2611293,1,2024-02-11,2,"Hiver","Dimanche",21,"Nuit éclairage allumé","Normale","Normale",0,"En agglomération",1,30,"Sans collision",1,1,1,1,0,0,0,0,0,0,0,0,1,46
 202400000955,"59","Nord",50.34812,3.28102,TRUE,2611293,1,2024-02-10,2,"Hiver","Samedi",18,"Nuit éclairage allumé","Pluie légère","Mouillee / Inondee",1,"En agglomération",1,50,"Autre collision",0,0,1,1,0,0,0,0,1,1,0,1,0,71.5
 202400000956,"55","Meuse",48.76971,5.1639,TRUE,181919,1,2024-02-07,2,"Hiver","Mercredi",8,"Plein jour","Normale","Normale",0,"En agglomération",1,30,"Autre collision",0,0,1,1,0,0,0,0,1,0,0,1,0,55
 202400000957,"51","Marne",49.226781,4.028438,TRUE,565292,2,2024-02-12,2,"Hiver","Lundi",16,"Plein jour","Normale","Mouillee / Inondee",1,"En agglomération",1,50,"Trois véh.+ en chaîne",0,0,3,1,0,0,0,1,0,0,0,0,1,44.8
@@ -12798,6 +12799,7 @@
 202400012798,"63","Puy-de-Dôme",45.78133,3.08806,TRUE,662285,1,2024-05-31,5,"Printemps","Vendredi",15,"Plein jour","Normale","Normale",0,"En agglomération",1,30,"Sans collision",0,0,1,0,0,1,0,0,0,1,1,0,1,18
 202400012799,"63","Puy-de-Dôme",45.78603,3.13615,TRUE,662285,1,2024-05-31,5,"Printemps","Vendredi",13,"Plein jour","Normale","Normale",0,"En agglomération",1,30,"Deux véh. - Arrière / Côté",0,0,2,1,0,0,0,0,0,0,0,0,0,34
 202400012800,"63","Puy-de-Dôme",45.78525,3.08471,TRUE,662285,1,2024-05-31,5,"Printemps","Vendredi",11,"Plein jour","Normale","Normale",0,"En agglomération",1,30,"Autre collision",0,0,1,1,0,0,0,0,1,1,0,1,0,85.5
+202400012801,"59","Nord",50.64207,3.01734,TRUE,2611293,1,2024-05-31,5,"Printemps","Vendredi",13,"Plein jour","Pluie légère","Mouillee / Inondee",1,"En agglomération",3,50,"Sans collision",0,0,2,1,0,1,0,0,0,0,0,0,1,49
 202400012802,"59","Nord",50.67166,3.09731,TRUE,2611293,1,2024-05-30,5,"Printemps","Jeudi",20,"Plein jour","Normale","Normale",0,"En agglomération",1,50,"Deux véh. - Arrière / Côté",1,1,2,1,0,1,0,0,0,1,0,1,1,42
 202400012803,"57","Moselle",49.3585,6.17022,TRUE,1049942,1,2024-05-30,5,"Printemps","Jeudi",16,"Plein jour","Normale","Normale",0,"En agglomération",1,50,"Autre collision",0,0,1,1,0,0,0,0,1,1,1,1,1,44.5
 202400012804,"56","Morbihan",47.64999,-2.77055,TRUE,768687,1,2024-05-31,5,"Printemps","Vendredi",12,"Plein jour","Normale","Normale",0,"En agglomération",6,30,"Deux véh. - Arrière / Côté",0,0,2,1,0,1,0,0,0,1,1,0,1,29.5
@@ -26220,6 +26222,7 @@
 202400026221,"976","Outre-Mer (COM)",-12.886048,45.215483,FALSE,NA,3,2024-09-04,9,"Automne","Mercredi",5,"Crépuscule/aube","Pluie forte","Mouillee / Inondee",1,"Hors agglomération",1,70,"Autre collision",1,0,1,1,0,0,0,0,1,1,1,0,1,11.4
 202400026222,"33","Gironde",44.80176,-0.58505,TRUE,1654970,1,2024-05-22,5,"Printemps","Mercredi",18,"Plein jour","Normale","Normale",0,"En agglomération",6,50,"Deux véh. - Arrière / Côté",0,0,2,1,0,1,0,0,0,0,0,1,1,52
 202400026223,"92","Hauts-de-Seine",48.83079466,2.23471248,TRUE,1635291,1,2024-07-27,7,"Ete","Samedi",14,"Plein jour","Pluie forte","Mouillee / Inondee",1,"En agglomération",2,50,"Deux véh. - Frontale",0,0,2,1,0,1,0,0,0,0,0,0,1,29.7
+202400026224,"28","Eure-et-Loir",48.73324,1.3452,TRUE,431277,1,2024-05-22,5,"Printemps","Mercredi",12,"Plein jour","Normale","Normale",0,"En agglomération",1,50,"Sans collision",0,0,1,1,0,0,0,0,1,1,0,0,0,47.5
 202400026225,"47","Lot-et-Garonne",44.133737,0.716701,TRUE,331229,1,2024-07-26,7,"Ete","Vendredi",7,"Plein jour","Normale","Normale",0,"Hors agglomération",1,80,"Sans collision",0,0,1,1,0,0,0,0,0,0,1,0,0,24
 202400026226,"49","Maine-et-Loire",47.432979,-0.872941,TRUE,824743,1,2024-09-03,9,"Automne","Mardi",8,"Plein jour","Normale","Normale",0,"Hors agglomération",1,130,"Deux véh. - Arrière / Côté",0,0,2,1,0,0,1,0,0,0,0,0,1,43.5
 202400026227,"63","Puy-de-Dôme",45.68475662,3.14399022,TRUE,662285,1,2024-09-04,9,"Automne","Mercredi",8,"Plein jour","Pluie forte","Mouillee / Inondee",1,"Hors agglomération",1,80,"Deux véh. - Arrière / Côté",1,0,2,1,0,0,0,0,0,0,0,0,1,51
@@ -38819,6 +38822,7 @@
 202400038821,"62","Pas-de-Calais",50.29737,2.82081,TRUE,1461441,1,2024-11-01,11,"Automne","Vendredi",5,"Nuit éclairage allumé","Pluie légère","Mouillee / Inondee",1,"En agglomération",1,50,"Autre collision",0,0,1,1,0,0,0,0,1,0,1,0,1,21.5
 202400038822,"60","Oise",49.39316223,2.79018626,TRUE,828838,2,2024-12-10,12,"Hiver","Mardi",14,"Plein jour","Normale","Normale",0,"Hors agglomération",1,50,"Autre collision",0,0,2,1,0,0,0,0,1,1,1,0,1,38.7
 202400038823,"59","Nord",50.757219,3.12715,TRUE,2611293,1,2024-11-04,11,"Automne","Lundi",7,"Crépuscule/aube","Brouillard","Normale",0,"Hors agglomération",9,70,"Deux véh. - Arrière / Côté",0,0,2,1,0,0,1,0,0,0,0,0,1,40
+202400038824,"59","Nord",50.61456,3.03574,TRUE,2611293,1,2024-12-09,12,"Hiver","Lundi",10,"Plein jour","Normale","Normale",0,"En agglomération",1,50,"Sans collision",0,0,1,1,0,0,0,0,1,0,0,0,0,45.5
 202400038825,"59","Nord",50.69996,3.16946,TRUE,2611293,1,2024-11-04,11,"Automne","Lundi",15,"Plein jour","Normale","Normale",0,"En agglomération",1,30,"Autre collision",0,0,1,1,0,0,0,0,1,1,1,1,1,43
 202400038826,"56","Morbihan",47.6608,-2.75414,TRUE,768687,1,2024-12-10,12,"Hiver","Mardi",14,"Plein jour","Normale","Normale",0,"En agglomération",1,50,"Deux véh. - Arrière / Côté",0,0,2,1,0,1,0,0,0,0,0,0,1,36
 202400038827,"57","Moselle",49.398419,6.123903,TRUE,1049942,1,2024-11-03,11,"Automne","Dimanche",3,"Nuit sans éclairage","Normale","Normale",0,"Hors agglomération",1,80,"Autre collision",1,1,1,1,0,0,0,0,0,0,0,0,1,32
@@ -38950,6 +38954,7 @@
 202400038953,"69","Rhône",45.76273,4.85175,TRUE,1893692,2,2024-01-13,1,"Hiver","Samedi",20,"Nuit éclairage allumé","Normale","Normale",0,"En agglomération",2,50,"Trois véh.+ coll. multiples",1,0,4,1,0,1,0,0,0,0,0,1,1,65.6
 202400038954,"972","Martinique",14.6283,-61.02816,FALSE,360749,1,2024-01-13,1,"Hiver","Samedi",18,"Nuit éclairage allumé","Normale","Normale",0,"En agglomération",1,30,"Sans collision",0,0,1,0,1,0,0,0,0,0,0,0,0,48
 202400038955,"972","Martinique",14.61819,-61.02765,FALSE,360749,1,2024-01-13,1,"Hiver","Samedi",13,"Plein jour","Normale","Normale",0,"En agglomération",1,90,"Deux véh. - Arrière / Côté",0,0,2,1,1,0,0,0,0,0,1,0,1,22.3
+202400038956,"2B","Haute-Corse",42.65512,9.43598,TRUE,184655,2,2024-01-13,1,"Hiver","Samedi",21,"Nuit éclairage allumé","Normale","Normale",0,"En agglomération",3,50,"Sans collision",0,0,3,1,0,0,0,0,0,0,1,1,1,28.6
 202400038957,"2B","Haute-Corse",42.61455,9.43757,TRUE,184655,2,2024-01-13,1,"Hiver","Samedi",11,"Plein jour","Normale","Normale",0,"En agglomération",1,30,"Deux véh. - Arrière / Côté",1,1,2,1,0,0,1,0,0,0,0,0,1,31.2
 202400038958,"971","Guadeloupe",16.22033,-61.51743,FALSE,384315,1,2024-01-13,1,"Hiver","Samedi",5,"Nuit éclairage allumé","Pluie légère","Mouillee / Inondee",1,"Hors agglomération",1,50,"Sans collision",0,0,1,0,1,0,0,0,0,0,1,0,1,23
 202400038959,"971","Guadeloupe",16.24539,-61.45864,FALSE,384315,1,2024-01-12,1,"Hiver","Vendredi",16,"Plein jour","Pluie légère","Mouillee / Inondee",1,"En agglomération",1,50,"Autre collision",0,0,1,1,0,0,0,0,0,0,1,0,1,23
@@ -44460,6 +44465,7 @@
 202400044464,"30","Gard",44.12253,4.08338,TRUE,756543,1,2024-09-25,9,"Automne","Mercredi",12,"Plein jour","Normale","Normale",0,"En agglomération",3,50,"Deux véh. - Arrière / Côté",0,0,2,1,0,1,0,0,0,0,0,0,1,25
 202400044465,"33","Gironde",44.78156,-0.56427,TRUE,1654970,1,2024-10-30,10,"Automne","Mercredi",15,"Plein jour","Normale","Normale",0,"En agglomération",3,50,"Deux véh. - Arrière / Côté",0,0,2,1,1,0,0,0,0,0,1,0,1,22.5
 202400044466,"72","Sarthe",47.839089,-0.316871,TRUE,566058,1,2024-12-08,12,"Hiver","Dimanche",18,"Nuit éclairage allumé","Normale","Normale",0,"En agglomération",3,50,"Deux véh. - Frontale",0,0,2,1,1,0,0,0,0,0,0,1,1,55.5
+202400044467,"32","Gers",43.64173,0.58538,TRUE,192437,1,2024-10-31,10,"Automne","Jeudi",10,"Plein jour","Normale","Normale",0,"En agglomération",1,50,"Sans collision",1,0,1,1,0,0,0,0,0,0,0,1,1,73
 202400044468,"61","Orne",48.567694,-0.157531,TRUE,276973,1,2024-12-08,12,"Hiver","Dimanche",10,"Plein jour","Pluie légère","Mouillee / Inondee",1,"Hors agglomération",1,50,"Deux véh. - Arrière / Côté",0,0,2,1,1,0,0,0,0,0,0,0,1,34.5
 202400044469,"25","Doubs",47.24812,5.97888,TRUE,547096,2,2024-09-26,9,"Automne","Jeudi",16,"Plein jour","Pluie légère","Mouillee / Inondee",1,"En agglomération",1,50,"Deux véh. - Arrière / Côté",0,0,2,1,0,0,0,0,0,0,0,1,0,31
 202400044470,"29","Finistère",47.98145316,-4.12027375,TRUE,921638,1,2024-10-30,10,"Automne","Mercredi",17,"Nuit avec éclairage","Normale","Normale",0,"En agglomération",1,70,"Deux véh. - Arrière / Côté",0,0,2,1,1,0,0,0,0,0,0,1,1,56
