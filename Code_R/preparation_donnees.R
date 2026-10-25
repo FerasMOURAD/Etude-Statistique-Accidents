@@ -16,6 +16,8 @@ library(tidyr)
 library(readr)
 library(lubridate)
 
+select <- dplyr::select #parce que ca utilise celle de MASS alors que je veux celle de dplyr
+
 # ==============================================================================
 # ÉTAPE 1 : CHARGEMENT DES FICHIERS SOURCES BRUTS ET POPULATION INSEE
 # ==============================================================================
@@ -56,7 +58,7 @@ accidents_2024 <- caracteristiques_2024 %>%
 # Suppression de la colonne adresse non exploitable statistiquement
 accidents_2024$adr <- NULL
 
-# Recodage des 6 accidents sans type de collision valide (col == -1) en 7 ("Sans collision") selon consigne
+# Recodage des 6 accidents sans type de collision valide (col == -1) en 7 ("Sans collision")
 accidents_2024 <- accidents_2024 %>%
   mutate(col = ifelse(col == -1, 7, col))
 
@@ -171,16 +173,13 @@ lieux_acc <- lieux_2024 %>%
       atm == 5         ~ 2, # Brouillard -> humide/mouillée
       TRUE             ~ 1  # Normale / sèche par défaut
     ),
-    # 3. Indicatrice binaire de chaussée glissante / dégradée
-    chaussee_glissante = as.integer(surf_impute %in% 2:8)
   ) %>%
   # Dédoublonnage des intersections : situation la plus défavorable
   group_by(Num_Acc) %>%
   summarise(
-    vma                = max(vma),
-    surf               = max(surf_impute),
-    chaussee_glissante = as.integer(any(chaussee_glissante == 1)),
-    .groups            = "drop"
+    vma     = max(vma),
+    surf    = max(surf_impute),
+    .groups = "drop"
   ) %>%
   mutate(
     # Regroupement en 3 catégories homogènes
@@ -213,14 +212,17 @@ vehic_acc <- vehicules_2024 %>%
     implique_transp_commun = as.integer(any(catv %in% c(18, 19, 37, 38, 39, 40))),
     # Chocs contre obstacle fixe
     choc_obstacle_fixe     = as.integer(any(obs_impute %in% 1:17)),
-    choc_arbre_mur         = as.integer(any(obs_impute %in% c(2, 6, 13))), # Choc lourd
     .groups                = "drop"
   )
 
 # 2. Usagers, âge, sexe et équipements de sécurité
 usagers_acc <- usagers_2024 %>%
+  left_join(
+    vehicules_2024 %>% select(Num_Acc, id_vehicule, catv),
+    by = c("Num_Acc", "id_vehicule"),
+    relationship = "many-to-one"
+  ) %>%
   mutate(
-    # Nettoyage et imputation conditionnelle de l'année de naissance
     an_nais_clean = ifelse(an_nais >= 1910 & an_nais <= 2024, an_nais, NA),
     an_nais_impute = case_when(
       !is.na(an_nais_clean) ~ an_nais_clean,
@@ -230,17 +232,35 @@ usagers_acc <- usagers_2024 %>%
       TRUE                  ~ 1985
     ),
     age = 2024 - an_nais_impute,
-    # Imputation du sexe par le mode (1 = Homme)
-    sexe_impute = ifelse(sexe %in% 1:2, sexe, 1)
+    sexe_impute = ifelse(sexe %in% 1:2, sexe, 1),
+    # Ceinture : voitures, utilitaires, poids lourds. Casque : deux-roues motorisés.
+    # Les piétons et les vélos/EDP sont exclus.
+    equipement_concerne = case_when(
+      catu != 3 & catv %in% c(3, 7:17) ~ "Ceinture",
+      catu != 3 & catv %in% c(2, 4:6, 30:36, 41:43) ~ "Casque",
+      TRUE ~ NA_character_
+    ),
+    equipement_statut = case_when(
+      equipement_concerne == "Ceinture" & (
+        secu1 %in% c(1, 3) | secu2 %in% c(1, 3) | secu3 %in% c(1, 3)
+      ) ~ "Port déclaré",
+      equipement_concerne == "Casque" & (
+        secu1 == 2 | secu2 == 2 | secu3 == 2
+      ) ~ "Port déclaré",
+      !is.na(equipement_concerne) & secu1 == 0 ~ "Non-port déclaré",
+      TRUE ~ NA_character_
+    )
   ) %>%
   group_by(Num_Acc) %>%
   summarise(
+    nb_usagers             = n(),   # nombre de personnes impliquées
     implique_pieton        = as.integer(any(catu == 3)),
-    defaut_securite        = as.integer(any(secu1 == 0)), # Non port ceinture / casque
-    # Profils démographiques usagers
+    # 1 = au moins un non-port documenté ; 0 = aucun non-port documenté (pas "tous équipés")
+    non_port_ceinture_casque = as.integer(any(equipement_statut == "Non-port déclaré", na.rm = TRUE)),
+    equipement_evaluable   = as.integer(any(!is.na(equipement_statut))),
     implique_jeune_18_24   = as.integer(any(age >= 18 & age <= 24)),
     implique_senior_65plus = as.integer(any(age >= 65)),
-    conducteur_homme       = as.integer(any(catu == 1 & sexe_impute == 1)),
+    au_moins_un_conducteur_homme = as.integer(any(catu == 1 & sexe_impute == 1)),
     age_moyen_usagers      = round(mean(age), 1),
     .groups                = "drop"
   )
@@ -262,13 +282,13 @@ accidents_2024 <- accidents_2024 %>%
     implique_poids_lourd    = coalesce(implique_poids_lourd, 0L),
     implique_transp_commun  = coalesce(implique_transp_commun, 0L),
     implique_pieton         = coalesce(implique_pieton, 0L),
-    defaut_securite         = coalesce(defaut_securite, 0L),
+    non_port_ceinture_casque = coalesce(non_port_ceinture_casque, 0L),
+    equipement_evaluable    = coalesce(equipement_evaluable, 0L),
     choc_obstacle_fixe      = coalesce(choc_obstacle_fixe, 0L),
-    choc_arbre_mur          = coalesce(choc_arbre_mur, 0L),
     implique_jeune_18_24    = coalesce(implique_jeune_18_24, 0L),
     implique_senior_65plus  = coalesce(implique_senior_65plus, 0L),
-    conducteur_homme        = coalesce(conducteur_homme, 0L),
-    chaussee_glissante      = coalesce(chaussee_glissante, 0L)
+    au_moins_un_conducteur_homme = coalesce(au_moins_un_conducteur_homme, 0L),
+    nb_usagers              = coalesce(nb_usagers, 1L)
   )
 
 # Conversion numérique des coordonnées
@@ -321,31 +341,34 @@ accidents_2024 <- accidents_2024 %>%
 accidents_2024 <- accidents_2024 %>%
   mutate(nom_dep = if_else(is.na(nom_dep) & grepl("^9[78]", dep), "Outre-Mer (COM)", nom_dep))
 
-# Sélection des variables d'intérêt pour la modélisation et l'analyse
+# Sélection des variables d'intérêt et restriction au périmètre d'étude :
+# France métropolitaine continentale (exclusion DROM-COM et Corse pour la compacité spatiale et climatique)
 accidents_modele <- accidents_2024 %>%
+  filter(!grepl("^9[78]", dep) & !dep %in% c("2A", "2B", "20A", "20B")) %>%
   select(
     # 1. Identifiants & Géographie
     Num_Acc, dep, nom_dep, lat, long, is_metropole, population,
     
-    # 2. Variable Cible (Sévérité)
+    # 2. Variable Cible (Nombre de victimes)
     Nb_victimes,
     
     # 3. Temporel
     date, mois, saison, jour_semaine, heure,
     
     # 4. Environnement & Météo
-    lum_label, atm_label, surf_regroup, chaussee_glissante,
+    lum_label, atm_label, surf_regroup,
     
     # 5. Infrastructure & Choc
-    agg_label, int, vma, col_regroup, choc_obstacle_fixe, choc_arbre_mur,
+    agg_label, int, vma, col_regroup, choc_obstacle_fixe,
     
     # 6. Véhicules impliqués
     nb_vehicules_impliquees, implique_voiture, implique_moto,
     implique_velo_edp, implique_poids_lourd, implique_transp_commun,
     
     # 7. Usagers & Facteurs humains
-    implique_pieton, defaut_securite, implique_jeune_18_24,
-    implique_senior_65plus, conducteur_homme, age_moyen_usagers
+    implique_pieton, nb_usagers, non_port_ceinture_casque, equipement_evaluable,
+    implique_jeune_18_24, implique_senior_65plus,
+    au_moins_un_conducteur_homme, age_moyen_usagers
   )
 
 
@@ -355,13 +378,14 @@ accidents_modele <- accidents_2024 %>%
 cat("\n=======================================================\n")
 cat("      RAPPORT D'AUDIT QUALITÉ DES DONNÉES 2024         \n")
 cat("=======================================================\n")
+cat(sprintf("• Périmètre d'étude     : France métropolitaine continentale\n"))
 cat(sprintf("• Observations retenues : %d accidents\n", nrow(accidents_modele)))
+cat(sprintf("• Départements          : %d départements\n", n_distinct(accidents_modele$dep)))
 cat(sprintf("• Variables finales     : %d colonnes\n", ncol(accidents_modele)))
 
 # Test des valeurs manquantes (NA)
-na_metropole <- sum(is.na(accidents_modele %>% filter(is_metropole)))
-cat(sprintf("• Valeurs manquantes en métropole (N = %d) : %d\n", 
-            sum(accidents_modele$is_metropole), na_metropole))
+na_total <- sum(is.na(accidents_modele))
+cat(sprintf("• Valeurs manquantes totales : %d\n", na_total))
 
 # Test des codes d'absence (-1)
 nb_minus_one <- sum(sapply(accidents_modele, function(x) if (is.numeric(x)) sum(x == -1, na.rm = TRUE) else 0))
@@ -384,7 +408,18 @@ for (nom in names(test_coherence)) {
 }
 cat("=======================================================\n\n")
 
+# ------------------------------------------------------------------------------
+# Découpage apprentissage / test (70 % / 30 %), commun à R et à Python
+# ------------------------------------------------------------------------------
+set.seed(2026)
+train_test_split <- sample(nrow(accidents_modele), size = round(0.7 * nrow(accidents_modele)))
+accidents_modele$echantillon <- ifelse(
+  seq_len(nrow(accidents_modele)) %in% train_test_split, "train", "test"
+)
+
 # Export de la table consolidée pour la modélisation sous R et Python
 write.csv(accidents_modele, "Ressources/accidents_modele.csv", row.names = FALSE)
+write.csv(accidents_modele, "Ressources/accidents_2024.csv", row.names = FALSE)
 
-cat(sprintf("--> SUCCÈS : Table propre exportée dans Ressources/accidents_modele.csv !\n\n"))
+cat(sprintf("--> SUCCÈS : Table propre exportée dans Ressources/accidents_modele.csv et accidents_2024.csv (33 colonnes) !\n\n"))
+

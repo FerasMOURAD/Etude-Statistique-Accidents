@@ -12,41 +12,46 @@
 #   2.2 Variables Temporelles : Mois, Jour de semaine, Heure et Saison
 #   2.3 Variables Environnementales : Luminosité et Conditions atmosphériques
 #   2.4 Variables d'Infrastructure et de Choc : Agglomération, Intersections et Collisions
-#   2.5 Variable Géographique : Taux d'accidentalité pour 100 000 habitants (Top 20)
+#   2.5 Variable Géographique : Taux d'accidents pour 100 000 habitants (Top 20)
 #
-# SECTION 3 : ANALYSES BIVARIÉES ET INFÉRENCE STATISTIQUE (CONFORME COURS PARTIE 2)
-#   3.1 Facteurs Explicatifs vs Variable Cible (X x Y, Sévérité = Nb_victimes)
-#       3.1.1 Saison vs Sévérité (Quali x Quanti)
-#       3.1.2 Conditions atmosphériques vs Sévérité (Quali x Quanti)
-#       3.1.3 Agglomération (Zone) vs Sévérité (Quali x Quanti, 2 groupes)
-#       3.1.4 Luminosité vs Sévérité (Quali x Quanti)
-#       3.1.5 Type de collision regroupé vs Sévérité (Quali x Quanti)
-#       3.1.6 Vitesse Maximale Autorisée (VMA) vs Sévérité (Tranches de vitesse)
-#       3.1.7 Facteurs usagers et démographiques vs Sévérité (Jeunes, Seniors, Hommes)
-#       3.1.8 Obstacles et État de la chaussée vs Sévérité (Obstacle fixe, Surface)
-#   3.2 Liaisons et Dépendances entre Variables Explicatives (X1 x X2, Quali x Quali)
-#       3.2.1 Saison x Conditions atmosphériques (Chi-2 & V de Cramer)
-#       3.2.2 Luminosité x Agglomération (Chi-2 & V de Cramer)
-#       3.2.3 Conditions atmosphériques x Agglomération (Chi-2 & V de Cramer)
-#       3.2.4 Présence de piétons x Agglomération (Chi-2 & V de Cramer)
-#       3.2.5 Implication de poids lourds x Type de collision (Chi-2 & V de Cramer)
-#       3.2.6 Défaut d'équipement de sécurité x Agglomération (Chi-2 & V de Cramer)
-#       3.2.7 Vitesse (VMA) x Agglomération (Quanti x Quali)
-#   3.3 Croisement Quantitative x Quantitative (Chapitre IV du cours)
-#       3.3.1 VMA continue vs Sévérité (Corrélations de Pearson & Spearman)
-#       3.3.2 Âge moyen des usagers vs Sévérité (Corrélations de Pearson & Spearman)
-#       3.3.3 Nombre de véhicules impliqués vs Sévérité (Pearson & Spearman)
+# SECTION 3 : ANALYSES BIVARIÉES ET INFÉRENCE STATISTIQUE
+#   3.1 Facteurs explicatifs vs Nombre de victimes (X x Y)
+#       3.1.1 Saison vs Nb_victimes (Quali x Quanti)
+#       3.1.2 Conditions atmosphériques vs Nb_victimes (Quali x Quanti)
+#       3.1.3 Agglomération (Zone) vs Nb_victimes (Quali x Quanti)
+#       3.1.4 Luminosité vs Nb_victimes (Quali x Quanti)
+#       3.1.5 Type de collision vs Nb_victimes (Quali x Quanti)
+#       3.1.6 Vitesse Maximale Autorisée (VMA) vs Nb_victimes
+#       3.1.7 Profil des usagers vs Nb_victimes (Jeunes, Seniors, Hommes)
+#       3.1.8 Obstacles et état de la chaussée vs Nb_victimes
+#   3.2 Liaisons entre variables explicatives
+#       3.2.1 à 3.2.6 Croisements qualitatifs (Chi-2 et V de Cramer)
+#       3.2.7 Vitesse (VMA) selon la zone (Quanti x Quali)
+#   3.3 Croisement Quantitative x Quantitative (Pearson et Spearman)
+#       3.3.1 VMA continue vs Nb_victimes
+#       3.3.2 Âge moyen des usagers vs Nb_victimes
+#       3.3.3 Nombre de véhicules impliqués vs Nb_victimes
 #
-# SECTION 4 : ANALYSE STATISTIQUE SPATIALE (AUTOCORRÉLATION & INDICE DE MORAN)
-#   4.1 Agrégation départementale métropolitaine et calcul des centroïdes
-#   4.2 Matrice de pondération spatiale par inverse des distances
-#   4.3 Test d'autocorrélation spatiale globale de Moran
-#   4.4 Cartographie thématique de la sévérité départementale
+# SECTION 4 : MODÉLISATION LINÉAIRE MULTIPLE (apprentissage 70 % / test 30 %)
+#   4.1 Estimation du modèle linéaire complet
+#   4.2 Sélection pas-à-pas de variables (stepAIC)
+#   4.3 Diagnostic graphique des résidus
+#   4.4 Conditions de validité (KS, Breusch-Pagan, Cook, leviers)
+#   4.5 Recherche du lambda de Box-Cox
+#   4.6 Transformations racine et log : RMSE et MAE sur le jeu de test
+#   4.7 Erreurs standard robustes HC3
+#   4.8 Sensibilité à la variable nb_usagers
+#   4.9 Observations influentes (Cook > 1)
+#   4.10 Test direct de la saison et de la météo (drop1)
 #
-# SECTION 5 : MODÉLISATION LINÉAIRE MULTIPLE ET SÉLECTION DE VARIABLES
-#   5.1 Estimation du modèle linéaire complet
-#   5.2 Sélection pas-à-pas de variables (stepAIC direction = 'both')
-#   5.3 Audit des conditions de validité des résidus (Gauss-Markov)
+# SECTION 5 : ANALYSE SPATIALE (Moran, Geary, cartes)
+#   5.1 Tableau départemental : victimes, usagers, résidus du modèle
+#   5.2 Voisinage par k plus proches voisins
+#   5.3 Moran et Geary (k = 5) et sensibilité à k
+#   5.4 Dépendance spatiale des résidus et du nombre d'usagers
+#   5.5 Contours des départements et voisinage par frontières communes
+#   5.6 Moran et Geary avec les frontières communes
+#   5.7 Cartes en aplats de couleurs
 # ==============================================================================
 
 # Se positionner sur la racine du projet si exécuté depuis Code_R
@@ -72,6 +77,12 @@ library(tidyr)
 library(scales)
 library(ape)
 library(maps)
+library(MASS)
+library(sandwich)
+library(spdep)
+library(lmtest)
+library(sf)
+library(ggspatial)
 
 cat("--> Environnement prêt :", nrow(accidents_modele), "observations chargées.\n")
 
@@ -207,7 +218,7 @@ ggplot(accidents_modele %>% filter(!is.na(int)), aes(x = factor(int))) +
   theme(axis.text.x = element_text(angle = 30, hjust = 1))
 
 # Typologie de collision (6 catégories validées empiriquement)
-cat("\n* Typologie de collision (regroupement justifié par la sévérité) :\n")
+cat("\n* Typologie de collision (regroupement justifié par le nombre de victimes) :\n")
 print(round(prop.table(table(accidents_modele$col_regroup)) * 100, 2))
 
 ggplot(accidents_modele %>% filter(!is.na(col_regroup)), aes(x = col_regroup)) +
@@ -248,17 +259,13 @@ ggplot(top_dep, aes(x = reorder(nom_dep, ratio), y = ratio)) +
 cat("\n=======================================================\n")
 cat("      SECTION 3 : ANALYSES BIVARIÉES ET INFÉRENCE      \n")
 cat("=======================================================\n")
-cat("CADRE MÉTHODOLOGIQUE (CONFORME AU COURS DE C. FRÉVENT - PARTIE 2) :\n")
-cat("1. Croisement Quanti x Quali  : Arbre décisionnel (K-S / Bartlett / Wilcoxon / Kruskal-Wallis)\n")
-cat("2. Croisement Quali x Quali   : Tableaux de contingence, tests du Chi-2 et V de Cramer\n")
-cat("3. Croisement Quanti x Quanti : Nuages de points et corrélations de Pearson & Spearman\n")
 
 # ==============================================================================
-# 3.1 Facteurs explicatifs vs Variable cible (X x Y, avec Y = Nb_victimes)
+# 3.1 Facteurs explicatifs vs Nombre de victimes (X x Y)
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# 3.1.1 Saison vs Sévérité (Quali x Quanti)
+# 3.1.1 Saison vs Nb_victimes (Quali x Quanti)
 # ------------------------------------------------------------------------------
 cat("\n=== 3.1.1 Saison x Nb_victimes ===\n")
 
@@ -276,7 +283,7 @@ stats_saison <- accidents_modele %>%
 print("Statistiques descriptives par saison :")
 print(stats_saison)
 
-# Graphique de la sévérité moyenne par saison
+# Graphique du nombre moyen de victimes par saison
 ggplot(stats_saison, aes(x = saison, y = Moyenne, fill = saison)) +
   geom_col(width = 0.55, show.legend = FALSE) +
   geom_text(aes(label = paste0(Moyenne, " vict.")), 
@@ -284,7 +291,7 @@ ggplot(stats_saison, aes(x = saison, y = Moyenne, fill = saison)) +
   scale_y_continuous(limits = c(0, 1.6)) +
   scale_fill_brewer(palette = "Blues") +
   labs(
-    title = "Sévérité moyenne des accidents selon la saison",
+    title = "Nombre moyen de victimes par accident selon la saison",
     x = "Saison", y = "Nombre moyen de victimes par accident"
   ) +
   theme_minimal(base_size = 12)
@@ -309,7 +316,7 @@ cat("\n* Test ANOVA / Welch généralisé (robuste à l'hétéroscédasticité) 
 print(oneway.test(Nb_victimes ~ saison, data = accidents_modele))
 
 # ------------------------------------------------------------------------------
-# 3.1.2 Conditions atmosphériques (Météo) vs Sévérité
+# 3.1.2 Conditions atmosphériques (Météo) vs Nb_victimes
 # ------------------------------------------------------------------------------
 cat("\n=== 3.1.2 Conditions atmosphériques x Nb_victimes ===\n")
 
@@ -329,7 +336,7 @@ stats_atm <- accidents_modele %>%
 print("Statistiques descriptives par condition météorologique :")
 print(stats_atm)
 
-# Graphique de la sévérité moyenne par condition météorologique
+# Graphique du nombre moyen de victimes par condition météorologique
 ggplot(stats_atm, aes(x = reorder(atm_label, Moyenne), y = Moyenne, fill = atm_label)) +
   geom_col(width = 0.65, show.legend = FALSE) +
   geom_text(aes(label = paste0(Moyenne, " vict.")), 
@@ -337,7 +344,7 @@ ggplot(stats_atm, aes(x = reorder(atm_label, Moyenne), y = Moyenne, fill = atm_l
   coord_flip() +
   scale_y_continuous(limits = c(0, 1.8)) +
   labs(
-    title = "Sévérité moyenne selon les conditions atmosphériques",
+    title = "Nombre moyen de victimes selon les conditions atmosphériques",
     x = "", y = "Nombre moyen de victimes par accident"
   ) +
   theme_minimal(base_size = 12)
@@ -353,7 +360,7 @@ cat("\n* Test de Welch généralisé :\n")
 print(oneway.test(Nb_victimes ~ atm_label, data = accidents_modele %>% filter(!is.na(atm_label))))
 
 # ------------------------------------------------------------------------------
-# 3.1.3 Agglomération (Zone) vs Sévérité
+# 3.1.3 Agglomération (Zone) vs Nb_victimes
 # ------------------------------------------------------------------------------
 cat("\n=== 3.1.3 Agglomération x Nb_victimes ===\n")
 
@@ -368,10 +375,10 @@ stats_agg <- accidents_modele %>%
     Q1         = quantile(Nb_victimes, probs = 0.25, na.rm = TRUE),
     Q3         = quantile(Nb_victimes, probs = 0.75, na.rm = TRUE)
   )
-print("Statistiques descriptives : Agglomération vs Sévérité :")
+print("Statistiques descriptives : Agglomération vs Nb_victimes :")
 print(stats_agg)
 
-# Graphique de la sévérité moyenne par zone
+# Graphique du nombre moyen de victimes par zone
 ggplot(stats_agg, aes(x = agg_label, y = Moyenne, fill = agg_label)) +
   geom_col(width = 0.45, show.legend = FALSE) +
   geom_text(aes(label = paste0(Moyenne, " vict.")), 
@@ -379,7 +386,7 @@ ggplot(stats_agg, aes(x = agg_label, y = Moyenne, fill = agg_label)) +
   scale_y_continuous(limits = c(0, 1.8)) +
   scale_fill_manual(values = c("Hors agglomération" = "#EF5350", "En agglomération" = "#42A5F5")) +
   labs(
-    title = "Sévérité moyenne des accidents selon la zone",
+    title = "Nombre moyen de victimes par accident selon la zone",
     x = "", y = "Nombre moyen de victimes par accident"
   ) +
   theme_minimal(base_size = 12)
@@ -395,7 +402,7 @@ cat("\n* Test de Welch pour 2 groupes à variances inégales :\n")
 print(t.test(Nb_victimes ~ agg_label, data = accidents_modele, var.equal = FALSE))
 
 # ------------------------------------------------------------------------------
-# 3.1.4 Luminosité vs Sévérité (Quali x Quanti)
+# 3.1.4 Luminosité vs Nb_victimes (Quali x Quanti)
 # ------------------------------------------------------------------------------
 cat("\n=== 3.1.4 Luminosité x Nb_victimes ===\n")
 
@@ -410,10 +417,10 @@ stats_lum <- accidents_modele %>%
     Q1         = quantile(Nb_victimes, probs = 0.25, na.rm = TRUE),
     Q3         = quantile(Nb_victimes, probs = 0.75, na.rm = TRUE)
   )
-print("Statistiques descriptives : Luminosité vs Sévérité :")
+print("Statistiques descriptives : Luminosité vs Nb_victimes :")
 print(stats_lum)
 
-# Graphique de la sévérité moyenne par condition d'éclairage (ordonné)
+# Graphique du nombre moyen de victimes selon la luminosité
 ggplot(stats_lum, aes(x = reorder(lum_label, Moyenne), y = Moyenne, fill = lum_label)) +
   geom_col(width = 0.6, show.legend = FALSE) +
   geom_text(aes(label = paste0(Moyenne, " vict.")), 
@@ -421,7 +428,7 @@ ggplot(stats_lum, aes(x = reorder(lum_label, Moyenne), y = Moyenne, fill = lum_l
   coord_flip() +
   scale_y_continuous(limits = c(0, 1.7)) +
   labs(
-    title = "Sévérité moyenne selon les conditions de luminosité",
+    title = "Nombre moyen de victimes selon les conditions de luminosité",
     x = "", y = "Nombre moyen de victimes par accident"
   ) +
   theme_minimal(base_size = 12)
@@ -434,7 +441,7 @@ test_kruskal_lum <- kruskal.test(Nb_victimes ~ lum_label, data = accidents_model
 print(test_kruskal_lum)
 
 # ------------------------------------------------------------------------------
-# 3.1.5 Type de collision vs Sévérité
+# 3.1.5 Type de collision vs Nb_victimes
 # ------------------------------------------------------------------------------
 cat("\n=== 3.1.5 Type de collision x Nb_victimes ===\n")
 
@@ -462,13 +469,13 @@ ggplot(biv_col, aes(x = reorder(col_regroup, Moyenne_victimes), y = Moyenne_vict
   coord_flip() +
   scale_y_continuous(limits = c(0, 2.4)) +
   labs(
-    title = "Sévérité moyenne des accidents selon le type de collision",
+    title = "Nombre moyen de victimes par accident selon le type de collision",
     x = "", y = "Nombre moyen de victimes par accident"
   ) +
   theme_minimal(base_size = 12)
 
 # ------------------------------------------------------------------------------
-# 3.1.6 Vitesse Maximale Autorisée (VMA) vs Sévérité
+# 3.1.6 Vitesse Maximale Autorisée (VMA) vs Nb_victimes
 # ------------------------------------------------------------------------------
 cat("\n=== 3.1.6 Vitesse maximale autorisée x Nb_victimes ===\n")
 
@@ -503,15 +510,15 @@ ggplot(biv_vma, aes(x = reorder(tranche_vma, Moyenne_victimes), y = Moyenne_vict
   coord_flip() +
   scale_y_continuous(limits = c(0, 1.85)) +
   labs(
-    title = "Sévérité moyenne des accidents selon la vitesse maximale autorisée",
+    title = "Nombre moyen de victimes selon la vitesse maximale autorisée",
     x = "", y = "Nombre moyen de victimes par accident"
   ) +
   theme_minimal(base_size = 12)
 
 # ------------------------------------------------------------------------------
-# 3.1.7 Facteurs démographiques et profil des usagers vs Sévérité
+# 3.1.7 Profil des usagers vs Nb_victimes
 # ------------------------------------------------------------------------------
-cat("\n=== 3.1.7 Facteurs usagers x Nb_victimes ===\n")
+cat("\n=== 3.1.7 Profil des usagers x Nb_victimes ===\n")
 
 # A. Implication de jeunes conducteurs/usagers (18-24 ans)
 cat("\n* Implication de jeunes (18-24 ans) vs Nb_victimes :\n")
@@ -546,7 +553,11 @@ print(wilcox.test(Nb_victimes ~ implique_senior_65plus, data = accidents_modele)
 # C. Genre du conducteur
 cat("\n* Genre du conducteur vs Nb_victimes :\n")
 stats_sexe <- accidents_modele %>%
-  mutate(sexe_label = if_else(conducteur_homme == 1, "Conducteur Homme", "Conductrice Femme")) %>%
+  mutate(
+    sexe_label = if_else(au_moins_un_conducteur_homme == 1,
+                              "Au moins un conducteur masculin",
+                              "Aucun conducteur masculin recensé")
+    ) %>%
   group_by(sexe_label) %>%
   summarise(
     Effectif         = n(),
@@ -556,12 +567,29 @@ stats_sexe <- accidents_modele %>%
   )
 print(stats_sexe)
 cat("Test non-paramétrique de Wilcoxon-Mann-Whitney :\n")
-print(wilcox.test(Nb_victimes ~ conducteur_homme, data = accidents_modele))
+print(wilcox.test(Nb_victimes ~ au_moins_un_conducteur_homme, data = accidents_modele))
+
+# D. Non-port documenté de ceinture ou de casque
+cat("\n* Non-port documenté de ceinture/casque vs Nb_victimes :\n")
+stats_nonport <- accidents_modele %>%
+  mutate(nonport_label = if_else(non_port_ceinture_casque == 1,
+                                 "Non-port documenté",
+                                 "Aucun non-port documenté")) %>%
+  group_by(nonport_label) %>%
+  summarise(
+    Effectif         = n(),
+    Moyenne_victimes = round(mean(Nb_victimes), 3),
+    Mediane          = median(Nb_victimes),
+    Ecart_type       = round(sd(Nb_victimes), 3)
+  )
+print(stats_nonport)
+cat("Test non-paramétrique de Wilcoxon-Mann-Whitney :\n")
+print(wilcox.test(Nb_victimes ~ non_port_ceinture_casque, data = accidents_modele))
 
 # ------------------------------------------------------------------------------
-# 3.1.8 Obstacles et État de la chaussée vs Sévérité
+# 3.1.8 Obstacles et état de la chaussée vs Nb_victimes
 # ------------------------------------------------------------------------------
-cat("\n=== 3.1.8 Obstacles et État de la chaussée x Nb_victimes ===\n")
+cat("\n=== 3.1.8 Obstacles et état de la chaussée x Nb_victimes ===\n")
 
 # A. Choc contre obstacle fixe lourd
 cat("\n* Choc contre obstacle fixe vs Nb_victimes :\n")
@@ -592,6 +620,9 @@ stats_surf <- accidents_modele %>%
 print(stats_surf)
 cat("Test non-paramétrique de Kruskal-Wallis :\n")
 print(kruskal.test(Nb_victimes ~ surf_regroup, data = accidents_modele))
+
+cat("\n* Comparaison binaire : Chaussée glissante (mouillée/critique) vs Normale (Wilcoxon) :\n")
+print(wilcox.test(Nb_victimes ~ I(surf_regroup %in% c("Mouillee / Inondee", "Glissante critique")), data = accidents_modele))
 
 
 # ==============================================================================
@@ -748,33 +779,39 @@ ggplot(accidents_modele %>% filter(!is.na(col_regroup)),
   theme(legend.position = "top")
 
 # ------------------------------------------------------------------------------
-# 3.2.6 Défaut d'équipement de sécurité x Agglomération
+# 3.2.6 Non-port documenté de ceinture/casque x Agglomération
 # ------------------------------------------------------------------------------
-cat("\n=== 3.2.6 Défaut d'équipement de sécurité x Agglomération ===\n")
+cat("\n=== 3.2.6 Non-port documenté de ceinture/casque x Agglomération ===\n")
 
+# 1 = au moins un usager concerné (voiture, utilitaire, poids lourd, deux-roues
+# motorisé) sans équipement enregistré. 0 = aucun non-port documenté (≠ « tous équipés »).
 tab_secu_agg <- table(
-  factor(accidents_modele$defaut_securite, levels = c(1, 0), labels = c("Défaut d'équipement", "Équipé conforme")),
+  factor(accidents_modele$non_port_ceinture_casque, levels = c(1, 0),
+         labels = c("Non-port documenté", "Aucun non-port documenté")),
   accidents_modele$agg_label
 )
-cat("Profils colonnes (% de défaut de sécurité par zone) :\n")
+cat("Profils colonnes (% d'accidents avec non-port documenté, par zone) :\n")
 print(round(prop.table(tab_secu_agg, margin = 2) * 100, 1))
+cat("Accidents dont l'équipement n'est pas évaluable :",
+    sum(accidents_modele$equipement_evaluable == 0), "\n")
 
 test_chi2_secu_agg <- chisq.test(tab_secu_agg)
 print(test_chi2_secu_agg)
 calc_cramer_v(tab_secu_agg, test_chi2_secu_agg)
 
 ggplot(accidents_modele %>% filter(!is.na(agg_label)),
-       aes(x = agg_label, fill = factor(defaut_securite, levels = c(1, 0), labels = c("Défaut d'équipement", "Équipé conforme")))) +
+       aes(x = agg_label, fill = factor(non_port_ceinture_casque, levels = c(1, 0),
+                                        labels = c("Non-port documenté", "Aucun non-port documenté")))) +
   geom_bar(position = "fill", width = 0.5) +
   scale_y_continuous(labels = scales::percent) +
-  scale_fill_manual(values = c("Défaut d'équipement" = "#FB8C00", "Équipé conforme" = "#78909C")) +
+  scale_fill_manual(values = c("Non-port documenté" = "#FB8C00",
+                               "Aucun non-port documenté" = "#78909C")) +
   labs(
-    title = "Défaut d'équipement de sécurité (ceinture/casque) selon la zone",
+    title = "Non-port documenté de ceinture/casque selon la zone",
     x = "", y = "Proportion", fill = "Équipement"
   ) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "top")
-
 # ------------------------------------------------------------------------------
 # 3.2.7 Vitesse (VMA) x Agglomération
 # ------------------------------------------------------------------------------
@@ -862,7 +899,7 @@ ggplot(accidents_modele, aes(x = age_moyen_usagers, y = Nb_victimes)) +
   scale_x_continuous(breaks = seq(10, 90, by = 10)) +
   scale_y_continuous(breaks = seq(1, 15, by = 2), limits = c(0.8, 16)) +
   labs(
-    title = "Relation entre l'âge moyen des usagers et la sévérité",
+    title = "Relation entre l'âge moyen des usagers et le nombre de victimes",
     x = "Âge moyen des usagers impliqués (années)",
     y = "Nombre de victimes par accident"
   ) +
@@ -895,114 +932,49 @@ ggplot(accidents_modele, aes(x = nb_vehicules_impliquees, y = Nb_victimes)) +
 
 
 # ==============================================================================
-# SECTION 4 : ANALYSE STATISTIQUE SPATIALE ET AUTOCORRÉLATION (INDICE DE MORAN)
+# SECTION 4 : MODÉLISATION LINÉAIRE MULTIPLE ET SÉLECTION DE VARIABLES
 # ==============================================================================
 
 cat("\n=======================================================\n")
-cat("      SECTION 4 : ANALYSE STATISTIQUE SPATIALE         \n")
+cat("  SECTION 4 : MODÉLISATION LINÉAIRE ET SÉLECTION DE VARIABLES\n")
 cat("=======================================================\n")
 
-# ------------------------------------------------------------------------------
-# 4.1 Agrégation départementale métropolitaine et centroïdes
-# ------------------------------------------------------------------------------
-# Exclusion des DROM-COM pour respecter la contiguïté géographique terrestre
-dep_spat <- accidents_modele %>%
-  filter(!grepl("^9[78]", dep)) %>%
-  group_by(dep, nom_dep) %>%
-  summarise(
-    n_accidents      = n(),
-    severite_moyenne = round(mean(Nb_victimes), 3),
-    lat              = mean(lat),
-    long             = mean(long),
-    .groups          = "drop"
-  )
-
-cat("\n=== Aperçu des données spatiales départementales (Top 6) ===\n")
-print(head(dep_spat))
+train <- subset(accidents_modele, echantillon == "train")
+test  <- subset(accidents_modele, echantillon == "test")
+cat("Train :", nrow(train), "| Test :", nrow(test), "\n")
 
 # ------------------------------------------------------------------------------
-# 4.2 Matrice de poids spatiaux par inverse de la distance géodésique
+# 4.1 Estimation du modèle complet
 # ------------------------------------------------------------------------------
-dists <- as.matrix(dist(cbind(dep_spat$long, dep_spat$lat)))
-dists_inv <- 1 / dists
-diag(dists_inv) <- 0 # Diagonale nulle (un département n'est pas son propre voisin)
-
-# ------------------------------------------------------------------------------
-# 4.3 Test d'autocorrélation spatiale globale de Moran
-# ------------------------------------------------------------------------------
-moran_res <- Moran.I(dep_spat$severite_moyenne, dists_inv)
-
-cat("\n=== RÉSULTATS DU TEST D'AUTOCORRÉLATION DE MORAN ===\n")
-print(moran_res)
-
-conclusion_moran <- ifelse(
-  moran_res$p.value < 0.05,
-  "Rejet de H0 : Autocorrélation spatiale positive très significative (la sévérité dépend de l'espace).",
-  "Non-rejet de H0 : Pas de dépendance spatiale significative."
-)
-cat("Conclusion :", conclusion_moran, "\n")
-
-# ------------------------------------------------------------------------------
-# 4.4 Cartographie thématique de la sévérité départementale
-# ------------------------------------------------------------------------------
-fr_map <- map_data("france")
-
-ggplot() +
-  geom_polygon(data = fr_map, aes(x = long, y = lat, group = group),
-               fill = "#F5F5F5", color = "#BDBDBD", linewidth = 0.3) +
-  geom_point(data = dep_spat, 
-             aes(x = long, y = lat, color = severite_moyenne, size = n_accidents),
-             alpha = 0.85) +
-  scale_color_gradient(low = "#42A5F5", high = "#E53935", 
-                       name = "Sévérité\nmoyenne") +
-  scale_size_continuous(range = c(2, 6), name = "Nb accidents") +
-  coord_fixed(1.3) +
-  labs(
-    title = "Sévérité moyenne des accidents par département (France 2024)",
-    subtitle = paste0("Indice de Moran I = ", round(moran_res$observed, 3), 
-                      " (p-value = ", format.pval(moran_res$p.value, digits = 3), ")"),
-    x = "", y = ""
-  ) +
-  theme_void() +
-  theme(
-    plot.title      = element_text(face = "bold", size = 14, hjust = 0.5),
-    plot.subtitle   = element_text(size = 11, hjust = 0.5, color = "gray30"),
-    legend.position = "right"
-  )
-
-
-
-
-# ==============================================================================
-# SECTION 5 : MODÉLISATION LINÉAIRE MULTIPLE ET SÉLECTION DE VARIABLES (PARTIES 3 & 4)
-# ==============================================================================
-
-cat("\n=======================================================\n")
-cat("  SECTION 5 : MODÉLISATION LINÉAIRE ET SÉLECTION STEP   \n")
-cat("=======================================================\n")
-
-# 5.1 Estimation du modèle complet
 mod_complet <- lm(
   Nb_victimes ~ saison + atm_label + agg_label + lum_label + col_regroup + 
-    vma + nb_vehicules_impliquees + implique_pieton + implique_jeune_18_24 + 
-    implique_senior_65plus + choc_obstacle_fixe + defaut_securite, 
-  data = accidents_modele
+    vma + nb_vehicules_impliquees + nb_usagers + implique_pieton + 
+    implique_jeune_18_24 + implique_senior_65plus + choc_obstacle_fixe + 
+    non_port_ceinture_casque,
+  data = train
 )
 
-cat("\n=== 5.1 Résumé du modèle linéaire multiple complet ===\n")
+cat("\n=== 4.1 Résumé du modèle linéaire multiple complet ===\n")
 print(summary(mod_complet))
 cat("AIC du modèle complet :", round(AIC(mod_complet), 2), "\n")
 
-# 5.2 Procédure de sélection pas-à-pas de variables (stepAIC direction = 'both')
-cat("\n=== 5.2 Procédure de sélection de variables pas-à-pas (stepAIC) ===\n")
-mod_optimal <- MASS::stepAIC(mod_complet, direction = "both", trace = FALSE)
+# ------------------------------------------------------------------------------
+# 4.2 Procédure de sélection de variables
+# ------------------------------------------------------------------------------
+cat("\n=== 4.2 Procédure de sélection de variables ===\n")
+mod_optimal <- stepAIC(mod_complet, direction = "both", trace = TRUE)
+
+# stepAIC affiche extractAIC (sans constante), AIC() la formule complète.
+# Les valeurs diffèrent d'une constante, mais le ΔAIC entre modèles est identique.
 
 cat("\n=== Modèle optimal retenu par AIC ===\n")
 print(summary(mod_optimal))
 cat(sprintf("AIC initial : %.2f --> AIC optimal : %.2f\n", AIC(mod_complet), AIC(mod_optimal)))
 
-# 5.3 Audit des résidus (Conditions de Gauss-Markov)
-cat("\n=== 5.3 Audit des conditions de validité des résidus ===\n")
+# ------------------------------------------------------------------------------
+# 4.3 Diagnostic graphique des résidus
+# ------------------------------------------------------------------------------
+cat("\n=== 4.3 Diagnostic des résidus ===\n")
 residus <- residuals(mod_optimal)
 valeurs_ajustees <- fitted(mod_optimal)
 
@@ -1014,12 +986,386 @@ ggplot(data.frame(Fitted = valeurs_ajustees, Residuals = residus), aes(x = Fitte
   geom_hline(yintercept = 0, color = "#D32F2F", linetype = "dashed", linewidth = 1) +
   geom_smooth(method = "loess", color = "#1E88E5", se = FALSE) +
   labs(
-    title = "Diagnostic des résidus du modèle linéaire optimal",
-    x = "Valeurs prédites (ajustées)",
-    y = "Résidus ordinaires"
+    title = "Diagnostic des résidus du modèle linéaire",
+    x = "Valeurs prédites",
+    y = "Résidus"
   ) +
   theme_minimal(base_size = 12)
+
+
+# ------------------------------------------------------------------------------
+# 4.4 Vérification des conditions de validité
+# ------------------------------------------------------------------------------
+# Résidus standardisés
+res_std <- rstandard(mod_optimal)
+
+# Normalité des résidus : QQ-plot, histogramme, test de Kolmogorov-Smirnov (n > 50)
+par(mfrow = c(1, 2))
+plot(mod_optimal, which = 2)   # QQ-plot
+hist(res_std, breaks = 50, main = "Histogramme des résidus standardisés",
+     xlab = "Valeur", ylab = "Fréquence")
+par(mfrow = c(1, 1))
+ks.test(res_std, "pnorm", mean(res_std), sd(res_std))
+
+# Variance constante (homoscédasticité) : graphique puis test de Breusch-Pagan
+plot(mod_optimal, which = 3)
+bptest(mod_optimal)
+
+# Linéarité : résidus en fonction des valeurs ajustées
+plot(mod_optimal, which = 1)
+
+# Observations aberrantes, leviers et influentes
+cook <- cooks.distance(mod_optimal)
+cat("Distance de Cook maximale :", round(max(cook), 3), "\n")
+cat("Observations avec Cook > 1 :", sum(cook > 1), "\n")
+
+levier <- hatvalues(mod_optimal)
+p <- length(coef(mod_optimal))   # nombre de paramètres, constante comprise
+seuil_levier <- 2 * p / nrow(train)
+cat("Points leviers (levier >", round(seuil_levier, 4), ") :", sum(levier > seuil_levier), "\n")
+
+
+# ------------------------------------------------------------------------------
+# 4.5 Transformation de Y : Recherche du lambda de Box-Cox
+# ------------------------------------------------------------------------------
+# Box-Cox teste Y^lambda : lambda = 1 (rien), 0.5 (racine), 0 (log), -1 (inverse), 2(carre)
+# Il faut Y > 0, ce qui est vrai ici (Nb_victimes >= 1)
+bc <- boxcox(mod_optimal, lambda = seq(-2, 2, by = 0.1))   # MASS est déjà chargé
+
+lambda_opt <- bc$x[which.max(bc$y)]
+cat("Lambda optimal :", lambda_opt, "\n")
+
+
+# ------------------------------------------------------------------------------
+# 4.6 Transformations racine et log : RMSE et MAE sur le jeu de test
+# ------------------------------------------------------------------------------
+# On garde les mêmes variables explicatives que mod_optimal
+mod_sqrt <- update(mod_optimal, sqrt(Nb_victimes) ~ .)
+mod_log  <- update(mod_optimal, log(Nb_victimes) ~ .)
+
+# Les conditions de validité sont-elles meilleures après transformation ?
+bptest(mod_sqrt)
+bptest(mod_log)
+ks.test(rstandard(mod_sqrt), "pnorm", mean(rstandard(mod_sqrt)), sd(rstandard(mod_sqrt)))
+ks.test(rstandard(mod_log),  "pnorm", mean(rstandard(mod_log)),  sd(rstandard(mod_log)))
+
+# Prédictions sur le jeu de TEST, ramenées en nombre de victimes
+pred_moy  <- rep(mean(train$Nb_victimes), nrow(test))   # référence : la moyenne seule
+pred_brut <- predict(mod_optimal, newdata = test)
+pred_sqrt <- predict(mod_sqrt, newdata = test)^2        # on annule la racine
+pred_log  <- exp(predict(mod_log, newdata = test))      # on annule le log
+
+# Critères de prédiction
+rmse <- function(y, yhat) sqrt(mean((y - yhat)^2))
+mae  <- function(y, yhat) mean(abs(y - yhat))
+
+resultats <- data.frame(
+  Modele = c("Moyenne seule", "Sans transformation", "Racine carrée", "Log"),
+  RMSE = c(rmse(test$Nb_victimes, pred_moy),  rmse(test$Nb_victimes, pred_brut),
+           rmse(test$Nb_victimes, pred_sqrt), rmse(test$Nb_victimes, pred_log)),
+  MAE  = c(mae(test$Nb_victimes, pred_moy),  mae(test$Nb_victimes, pred_brut),
+           mae(test$Nb_victimes, pred_sqrt), mae(test$Nb_victimes, pred_log))
+)
+resultats$RMSE <- round(resultats$RMSE, 4)
+resultats$MAE  <- round(resultats$MAE, 4)
+print(resultats)
+
+
+# ------------------------------------------------------------------------------
+# 4.7 Erreurs standard non sensibles à l'hétéroscédasticité HC3
+# ------------------------------------------------------------------------------
+# Les coefficients ne changent pas : seuls les écarts-types, les t et les p changent
+# coeftest permet de tester les coefficients avec cette matrice
+
+coef_classique <- coeftest(mod_optimal)
+coef_robuste   <- coeftest(mod_optimal, vcov = vcovHC(mod_optimal, type = "HC3"))
+
+comparaison <- data.frame(
+  t_classique = round(coef_classique[, "t value"], 2),
+  t_robuste   = round(coef_robuste[, "t value"], 2),
+  p_robuste   = signif(coef_robuste[, "Pr(>|t|)"], 3)
+)
+print(comparaison)
+
+
+# ------------------------------------------------------------------------------
+# 4.8 Sensibilité à la variable nb_usagers
+# ------------------------------------------------------------------------------
+# On compare deux modèles COMPLETS (mêmes variables), avec et sans nb_usagers
+mod_complet_sans <- update(mod_complet, . ~ . - nb_usagers)
+
+variables <- c("saisonEte", "implique_jeune_18_24", "implique_senior_65plus",
+               "non_port_ceinture_casque", "nb_vehicules_impliquees")
+sensibilite <- data.frame(
+  sans_nb_usagers = round(coef(mod_complet_sans)[variables], 3),
+  avec_nb_usagers = round(coef(mod_complet)[variables], 3)
+)
+print(sensibilite)
+
+# Même comparaison sur le jeu de test
+cat("RMSE test sans nb_usagers :",
+    round(rmse(test$Nb_victimes, predict(mod_complet_sans, newdata = test)), 4), "\n")
+cat("RMSE test avec nb_usagers :",
+    round(rmse(test$Nb_victimes, predict(mod_complet, newdata = test)), 4), "\n")
+  
+
+# ------------------------------------------------------------------------------
+# 4.9 Observations influentes (Cook > 1)
+# ------------------------------------------------------------------------------
+obs_influentes <- which(cook > 1)
+print(train[obs_influentes, c("Num_Acc", "Nb_victimes", "nb_usagers",
+                        "nb_vehicules_impliquees", "col_regroup", "agg_label")])
+
+# Même modèle, ajusté sans ces observations
+train_sans <- train[-obs_influentes, ]
+mod_sans_infl <- update(mod_optimal, data = train_sans)
+
+# Coefficients avec et sans ces observations
+comparaison_infl <- data.frame(
+  avec = round(coef(mod_optimal), 3),
+  sans = round(coef(mod_sans_infl), 3)
+)
+print(comparaison_infl)
+
+# Performance sur le même jeu de test
+cat("RMSE test, modèle complet    :",
+    round(rmse(test$Nb_victimes, predict(mod_optimal, newdata = test)), 4), "\n")
+cat("RMSE test, sans ces 6 points :",
+    round(rmse(test$Nb_victimes, predict(mod_sans_infl, newdata = test)), 4), "\n")
+
+
+# ------------------------------------------------------------------------------
+# 4.10 Test direct de la saison et de la météo
+# ------------------------------------------------------------------------------
+# drop1 retire chaque variable du modèle
+# et teste si le modèle devient significativement moins bon.
+
+# H0 : la variable n'a aucun effet     H1 : elle a un effet
+drop1(mod_complet, test = "F")
+
+# Même lecture avec les erreurs HC3 (comme au bloc 4.7) : on regarde les lignes
+# saison... et atm_label...
+coeftest(mod_complet, vcov = vcovHC(mod_complet, type = "HC3"))
+
+
+# ==============================================================================
+# SECTION 5 : ANALYSE STATISTIQUE SPATIALE (INDICES DE MORAN ET GEARY)
+# ==============================================================================
+
+cat("\n=======================================================\n")
+cat("      SECTION 5 : ANALYSE STATISTIQUE SPATIALE         \n")
+cat("=======================================================\n")
+
+# ------------------------------------------------------------------------------
+# 5.1 Tableau départemental : victimes, usagers, résidus du modèle
+# ------------------------------------------------------------------------------
+# Résidu = réalité - prédiction du modèle (ce que le modèle n'explique pas)
+accidents_modele$residu <- accidents_modele$Nb_victimes -
+  predict(mod_optimal, newdata = accidents_modele)
+
+dep_stats <- accidents_modele %>%
+  group_by(dep, nom_dep) %>%
+  summarise(
+    n_accidents  = n(),
+    victimes_moy = mean(Nb_victimes),
+    usagers_moy  = mean(nb_usagers),
+    residu_moy   = mean(residu),
+    lat          = mean(lat),
+    long         = mean(long),
+    .groups      = "drop"
+  )
+
+print(head(dep_stats))
+cat("Nombre de départements :", nrow(dep_stats), "\n")
+
+
+# ------------------------------------------------------------------------------
+# 5.2 Voisinage par k plus proches voisins
+# ------------------------------------------------------------------------------
+# Coordonnées de chaque département (longitude, latitude)
+coords <- cbind(dep_stats$long, dep_stats$lat)
+
+# Chaque département a pour voisins les 5 départements les plus proches
+voisins_k5 <- knn2nb(knearneigh(coords, k = 5, longlat = TRUE))
+
+print(voisins_k5)            # résumé : nombre de liens, voisins par département
+plot(voisins_k5, coords)     # graphe de voisinage
+
+
+# ------------------------------------------------------------------------------
+# 5.3 Moran et Geary (k = 5) et sensibilité au nombre de voisins (k = 3, 5, 8)
+# ------------------------------------------------------------------------------
+# 5.3a Test de dépendance spatiale du nombre moyen de victimes (k = 5)
+# Matrice de poids : chaque ligne somme à 1 (style "W")
+poids_k5 <- nb2listw(voisins_k5, style = "W")
+
+# H0 : pas d'autocorrélation spatiale   H1 : autocorrélation spatiale
+moran.test(dep_stats$victimes_moy, listw = poids_k5, alternative = "two.sided")
+geary.test(dep_stats$victimes_moy, listw = poids_k5, alternative = "two.sided")
+
+# 5.3b Sensibilité au choix du nombre de voisins
+voisins_k3 <- knn2nb(knearneigh(coords, k = 3, longlat = TRUE))
+voisins_k8 <- knn2nb(knearneigh(coords, k = 8, longlat = TRUE))
+poids_k3 <- nb2listw(voisins_k3, style = "W")
+poids_k8 <- nb2listw(voisins_k8, style = "W")
+
+moran_k3 <- moran.test(dep_stats$victimes_moy, poids_k3, alternative = "two.sided")
+moran_k5 <- moran.test(dep_stats$victimes_moy, poids_k5, alternative = "two.sided")
+moran_k8 <- moran.test(dep_stats$victimes_moy, poids_k8, alternative = "two.sided")
+geary_k3 <- geary.test(dep_stats$victimes_moy, poids_k3, alternative = "two.sided")
+geary_k5 <- geary.test(dep_stats$victimes_moy, poids_k5, alternative = "two.sided")
+geary_k8 <- geary.test(dep_stats$victimes_moy, poids_k8, alternative = "two.sided")
+
+sensibilite_k <- data.frame(
+  k       = c(3, 5, 8),
+  Moran_I = round(c(moran_k3$estimate[1], moran_k5$estimate[1], moran_k8$estimate[1]), 3),
+  p_Moran = signif(c(moran_k3$p.value, moran_k5$p.value, moran_k8$p.value), 3),
+  Geary_C = round(c(geary_k3$estimate[1], geary_k5$estimate[1], geary_k8$estimate[1]), 3),
+  p_Geary = signif(c(geary_k3$p.value, geary_k5$p.value, geary_k8$p.value), 3)
+)
+print(sensibilite_k)
+
+
+# ------------------------------------------------------------------------------
+# 5.4 Dépendance spatiale des résidus du modèle et du nombre d'usagers
+# ------------------------------------------------------------------------------
+# H0 : pas d'autocorrélation spatiale   H1 : autocorrélation spatiale
+
+# Résidus moyens par département, pour k = 3, 5 et 8
+moran_res_k3 <- moran.test(dep_stats$residu_moy, poids_k3, alternative = "two.sided")
+moran_res_k5 <- moran.test(dep_stats$residu_moy, poids_k5, alternative = "two.sided")
+moran_res_k8 <- moran.test(dep_stats$residu_moy, poids_k8, alternative = "two.sided")
+
+tableau_residus <- data.frame(
+  k       = c(3, 5, 8),
+  Moran_I = round(c(moran_res_k3$estimate[1], moran_res_k5$estimate[1],
+                    moran_res_k8$estimate[1]), 3),
+  p_Moran = signif(c(moran_res_k3$p.value, moran_res_k5$p.value,
+                     moran_res_k8$p.value), 3)
+)
+print(tableau_residus)
+
+# Nombre moyen d'usagers par accident (k = 5)
+moran.test(dep_stats$usagers_moy, poids_k5, alternative = "two.sided")
+
+
+# ------------------------------------------------------------------------------
+# 5.5 Contours des départements et voisinage par frontières communes
+# ------------------------------------------------------------------------------
+# Lecture du fichier de contours (96 départements, Corse comprise)
+fr_dep <- st_read("Ressources/departements-version-simplifiee.geojson")
+
+# On relie les contours à notre tableau par le code du département.
+# merge ne garde que les départements présents des deux côtés : la Corse disparaît
+fr_dep <- merge(fr_dep, dep_stats, by.x = "code", by.y = "dep")
+cat("Départements après jointure :", nrow(fr_dep), "\n")
+
+# Voisins = départements qui partagent une frontière (queen = TRUE, comme le cours)
+voisins_contig <- poly2nb(fr_dep, queen = TRUE)
+print(voisins_contig)
+plot(st_geometry(fr_dep), border = "gray")
+plot(voisins_contig, st_geometry(fr_dep), add = TRUE)
+
+
+# ------------------------------------------------------------------------------
+# 5.6 Moran et Geary avec les frontières communes (contiguïté queen)
+# ------------------------------------------------------------------------------
+# H0 : pas d'autocorrélation spatiale   H1 : autocorrélation spatiale
+poids_contig <- nb2listw(voisins_contig, style = "W")
+
+variables_spatiales <- c("victimes_moy", "usagers_moy", "residu_moy")
+
+resultats_contig <- data.frame(
+  Variable = variables_spatiales,
+  Moran_I = NA, p_Moran = NA, Geary_C = NA, p_Geary = NA
+)
+
+for (i in 1:3) {
+  x <- fr_dep[[variables_spatiales[i]]]    # la colonne à tester
+  m <- moran.test(x, poids_contig, alternative = "two.sided")
+  g <- geary.test(x, poids_contig, alternative = "two.sided")
+  resultats_contig$Moran_I[i] <- round(m$estimate[1], 3)
+  resultats_contig$p_Moran[i] <- signif(m$p.value, 3)
+  resultats_contig$Geary_C[i] <- round(g$estimate[1], 3)
+  resultats_contig$p_Geary[i] <- signif(g$p.value, 3)
+}
+print(resultats_contig)
+
+
+# ------------------------------------------------------------------------------
+# 5.7 Cartes en aplats de couleurs et synthèse départementale
+# ------------------------------------------------------------------------------
+# Carte 1 : nombre moyen de victimes par accident
+ggplot(data = fr_dep, aes(fill = victimes_moy)) +
+  geom_sf() +
+  scale_fill_viridis_c(option = "magma", direction = -1) +
+  annotation_scale(location = "bl") +
+  annotation_north_arrow(location = "tr") +
+  labs(title = "Nombre moyen de victimes par accident",
+       fill = "Victimes\nmoyennes") +
+  theme_minimal()
+
+# Carte 2 : résidu moyen du modèle (blanc = le modèle ne se trompe pas en moyenne)
+ggplot(data = fr_dep, aes(fill = residu_moy)) +
+  geom_sf() +
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0) +
+  annotation_scale(location = "bl") +
+  annotation_north_arrow(location = "tr") +
+  labs(title = "Résidu moyen du modèle linéaire",
+       fill = "Résidu\nmoyen") +
+  theme_minimal()
+
+# Les 5 départements aux valeurs les plus hautes et les plus basses
+head(arrange(dep_stats, desc(victimes_moy)), 5)
+head(arrange(dep_stats, victimes_moy), 5)
+
 
 cat("\n=======================================================\n")
 cat("          FIN DE L'EXÉCUTION DU SCRIPT R              \n")
 cat("=======================================================\n")
+
+
+
+
+
+# ==============================================================================
+# EXPORT DES FIGURES DU RAPPORT (régression et analyse spatiale)
+# ==============================================================================
+dir.create("Rapport/figures", showWarnings = FALSE, recursive = TRUE)
+
+# Diagnostic du modèle : les 4 graphiques du cours (partie 3) dans une seule image
+png("Rapport/figures/diag_modele.png", width = 2400, height = 2000, res = 300)
+par(mfrow = c(2, 2))
+plot(mod_optimal, which = 1)   # résidus vs valeurs ajustées (linéarité)
+plot(mod_optimal, which = 2)   # QQ-plot (normalité)
+plot(mod_optimal, which = 3)   # scale-location (variance constante)
+plot(mod_optimal, which = 4)   # distance de Cook (observations influentes)
+par(mfrow = c(1, 1))
+dev.off()
+
+# Courbe de Box-Cox
+png("Rapport/figures/boxcox.png", width = 1800, height = 1400, res = 300)
+boxcox(mod_optimal, lambda = seq(-2, 2, by = 0.1))
+dev.off()
+
+# Carte 1 : nombre moyen de victimes par accident (aplats de couleurs)
+carte_victimes <- ggplot(fr_dep, aes(fill = victimes_moy)) +
+  geom_sf() +
+  scale_fill_viridis_c(option = "magma", direction = -1) +
+  annotation_scale(location = "bl") +
+  annotation_north_arrow(location = "tr") +
+  labs(fill = "Victimes\nmoyennes") +
+  theme_minimal()
+ggsave("Rapport/figures/carte_victimes.png", carte_victimes,
+       width = 7, height = 6, dpi = 300)
+
+# Carte 2 : résidu moyen du modèle
+carte_residus <- ggplot(fr_dep, aes(fill = residu_moy)) +
+  geom_sf() +
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0) +
+  annotation_scale(location = "bl") +
+  annotation_north_arrow(location = "tr") +
+  labs(fill = "Résidu\nmoyen") +
+  theme_minimal()
+ggsave("Rapport/figures/carte_residus.png", carte_residus,
+       width = 7, height = 6, dpi = 300)
