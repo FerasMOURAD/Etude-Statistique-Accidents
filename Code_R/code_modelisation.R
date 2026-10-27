@@ -75,8 +75,7 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(scales)
-library(ape)
-library(maps)
+
 library(MASS)
 library(sandwich)
 library(spdep)
@@ -947,10 +946,12 @@ cat("Train :", nrow(train), "| Test :", nrow(test), "\n")
 # 4.1 Estimation du modèle complet
 # ------------------------------------------------------------------------------
 mod_complet <- lm(
-  Nb_victimes ~ saison + atm_label + agg_label + lum_label + col_regroup + 
-    vma + nb_vehicules_impliquees + nb_usagers + implique_pieton + 
-    implique_jeune_18_24 + implique_senior_65plus + choc_obstacle_fixe + 
-    non_port_ceinture_casque,
+  Nb_victimes ~ saison + atm_label + agg_label + lum_label + col_regroup +
+    vma + nb_vehicules_impliquees + nb_usagers + implique_pieton +
+    implique_jeune_18_24 + implique_senior_65plus + choc_obstacle_fixe +
+    non_port_ceinture_casque +
+    implique_voiture + implique_moto + implique_velo_edp +
+    implique_poids_lourd + implique_transp_commun,
   data = train
 )
 
@@ -1130,7 +1131,7 @@ print(comparaison_infl)
 # Performance sur le même jeu de test
 cat("RMSE test, modèle complet    :",
     round(rmse(test$Nb_victimes, predict(mod_optimal, newdata = test)), 4), "\n")
-cat("RMSE test, sans ces 6 points :",
+cat("RMSE test, sans ces points influents :",
     round(rmse(test$Nb_victimes, predict(mod_sans_infl, newdata = test)), 4), "\n")
 
 

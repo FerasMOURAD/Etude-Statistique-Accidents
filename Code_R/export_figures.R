@@ -6,7 +6,6 @@
 
 library(dplyr)
 library(ggplot2)
-library(maps)
 
 accidents_modele <- read.csv("Ressources/accidents_modele.csv")
 dir.create("Rapport/figures", showWarnings = FALSE, recursive = TRUE)
@@ -324,7 +323,10 @@ p10 <- ggplot(accidents_modele, aes(x = nb_vehicules_impliquees, y = Nb_victimes
 ggsave("Rapport/figures/quanti_vehicules.png", p10, width = 7.5, height = 4.2, dpi = 300)
 
 # ==============================================================================
-# SECTION 4 & 5 : SPATIALISATION ET DIAGNOSTIC DES RÉSIDUS
+# SECTIONS 4 ET 5 : les figures de la régression (diag_modele.png, boxcox.png)
+# et des cartes (carte_victimes.png, carte_residus.png) sont générées à la fin
+# de code_modelisation.R, car elles utilisent le modèle final et les résidus
+# calculés dans ce script.
 # ==============================================================================
 
 cat("--> Toutes les figures ont été générées et exportées avec succès dans Rapport/figures/ !\n")

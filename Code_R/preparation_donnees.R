@@ -89,8 +89,8 @@ accidents_2024$date <- as.Date(
 )
 
 accidents_2024$jour_semaine <- factor(
-  weekdays(accidents_2024$date),
-  levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+  lubridate::wday(accidents_2024$date, week_start = 1),
+  levels = 1:7,
   labels = c("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
 )
 
@@ -107,16 +107,8 @@ lab_atm <- c("1" = "Normale", "2" = "Pluie légère", "3" = "Pluie forte",
              "7" = "Temps éblouissant", "8" = "Temps nuageux", "9" = "Autre")
 
 lab_lum <- c("1" = "Plein jour", "2" = "Crépuscule/aube",
-             "3" = "Nuit sans éclairage", "4" = "Nuit avec éclairage",
+             "3" = "Nuit sans éclairage", "4" = "Nuit, éclairage public non allumé",
              "5" = "Nuit éclairage allumé")
-
-lab_col <- c("1" = "Deux véh. - frontale",
-             "2" = "Deux véh. - par l'arrière",
-             "3" = "Deux véh. - par le côté",
-             "4" = "Trois véh.+ en chaîne",
-             "5" = "Trois véh.+ conf. multiple",
-             "6" = "Autre collision",
-             "7" = "Sans collision")
 
 lab_int <- c("1" = "Hors intersection", "2" = "En X", "3" = "En T",
              "4" = "En Y", "5" = "> 4 branches", "6" = "Rond-point",
@@ -157,7 +149,7 @@ lieux_acc <- lieux_2024 %>%
   mutate(
     # 1. Correction et imputation métier de la VMA
     vma = ifelse(vma %in% c(300, 500, 700, 800, 900), vma / 10, vma),
-    vma = ifelse(vma %in% 1:9, vma * 10, vma), # Correction des oublis de zéro (5 -> 50, 8 -> 80)
+    vma = ifelse(vma %in% 1:9, vma * 10, vma), # Correction des oublis de zéro
     vma = ifelse(vma < 10 | vma > 130, NA, vma),
     vma = case_when(
       !is.na(vma) ~ vma,
@@ -217,22 +209,20 @@ vehic_acc <- vehicules_2024 %>%
 
 # 2. Usagers, âge, sexe et équipements de sécurité
 usagers_acc <- usagers_2024 %>%
-  left_join(
+    left_join(
     vehicules_2024 %>% select(Num_Acc, id_vehicule, catv),
-    by = c("Num_Acc", "id_vehicule"),
-    relationship = "many-to-one"
+    by = c("Num_Acc", "id_vehicule")
   ) %>%
   mutate(
     an_nais_clean = ifelse(an_nais >= 1910 & an_nais <= 2024, an_nais, NA),
     an_nais_impute = case_when(
       !is.na(an_nais_clean) ~ an_nais_clean,
-      catu == 1             ~ 1983, # Conducteur : médiane 41 ans
-      catu == 2             ~ 2000, # Passager : médiane 24 ans
-      catu == 3             ~ 1986, # Piéton : médiane 38 ans
+      catu == 1             ~ 1983, # Conducteur : 41 ans (proche de la moyenne, 40,7 ans ; la médiane est 38)
+      catu == 2             ~ 2000, # Passager : 24 ans (médiane)
+      catu == 3             ~ 1986, # Piéton : 38 ans (valeur approximative, seulement 5 usagers concernés)
       TRUE                  ~ 1985
     ),
     age = 2024 - an_nais_impute,
-    sexe_impute = ifelse(sexe %in% 1:2, sexe, 1),
     # Ceinture : voitures, utilitaires, poids lourds. Casque : deux-roues motorisés.
     # Les piétons et les vélos/EDP sont exclus.
     equipement_concerne = case_when(
@@ -260,7 +250,7 @@ usagers_acc <- usagers_2024 %>%
     equipement_evaluable   = as.integer(any(!is.na(equipement_statut))),
     implique_jeune_18_24   = as.integer(any(age >= 18 & age <= 24)),
     implique_senior_65plus = as.integer(any(age >= 65)),
-    au_moins_un_conducteur_homme = as.integer(any(catu == 1 & sexe_impute == 1)),
+    au_moins_un_conducteur_homme = as.integer(any(catu == 1 & sexe == 1)),
     age_moyen_usagers      = round(mean(age), 1),
     .groups                = "drop"
   )
@@ -421,5 +411,4 @@ accidents_modele$echantillon <- ifelse(
 write.csv(accidents_modele, "Ressources/accidents_modele.csv", row.names = FALSE)
 write.csv(accidents_modele, "Ressources/accidents_2024.csv", row.names = FALSE)
 
-cat(sprintf("--> SUCCÈS : Table propre exportée dans Ressources/accidents_modele.csv et accidents_2024.csv (33 colonnes) !\n\n"))
-
+cat(sprintf("--> SUCCÈS : Table propre exportée dans Ressources/accidents_modele.csv et accidents_2024.csv (%d colonnes) !\n\n", ncol(accidents_modele)))
