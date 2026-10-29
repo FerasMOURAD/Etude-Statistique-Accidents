@@ -216,8 +216,8 @@ ggplot(accidents_modele %>% filter(!is.na(int)), aes(x = factor(int))) +
   theme_minimal(base_size = 12) +
   theme(axis.text.x = element_text(angle = 30, hjust = 1))
 
-# Typologie de collision (6 catégories validées empiriquement)
-cat("\n* Typologie de collision (regroupement justifié par le nombre de victimes) :\n")
+# Typologie de collision (6 catégories : regroupement des chocs 2 et 3 sans composante frontale)
+cat("\n* Typologie de collision :\n")
 print(round(prop.table(table(accidents_modele$col_regroup)) * 100, 2))
 
 ggplot(accidents_modele %>% filter(!is.na(col_regroup)), aes(x = col_regroup)) +
@@ -449,9 +449,9 @@ biv_col <- accidents_modele %>%
   group_by(col_regroup) %>%
   summarise(
     Effectif         = n(),
-    Moyenne_victimes = round(mean(Nb_victimes), 2),
+    Moyenne_victimes = round(mean(Nb_victimes), 3),
     Mediane          = median(Nb_victimes),
-    Ecart_type       = round(sd(Nb_victimes), 2)
+    Ecart_type       = round(sd(Nb_victimes), 3)
   ) %>%
   arrange(desc(Moyenne_victimes))
 
@@ -1148,6 +1148,12 @@ drop1(mod_complet, test = "F")
 # saison... et atm_label...
 coeftest(mod_complet, vcov = vcovHC(mod_complet, type = "HC3"))
 
+# Test global avec erreurs robustes (HC3) : saison puis météo
+waldtest(update(mod_complet, . ~ . - saison), mod_complet, test = "Chisq",
+         vcov = function(x) vcovHC(x, type = "HC3"))
+waldtest(update(mod_complet, . ~ . - atm_label), mod_complet, test = "Chisq",
+         vcov = function(x) vcovHC(x, type = "HC3"))
+
 
 # ==============================================================================
 # SECTION 5 : ANALYSE STATISTIQUE SPATIALE (INDICES DE MORAN ET GEARY)
@@ -1334,13 +1340,57 @@ cat("=======================================================\n")
 # ==============================================================================
 dir.create("Rapport/figures", showWarnings = FALSE, recursive = TRUE)
 
-# Diagnostic du modèle : les 4 graphiques du cours (partie 3) dans une seule image
+# Diagnostic du modèle : les 4 graphiques du cours (partie 3) avec titres et axes en français
 png("Rapport/figures/diag_modele.png", width = 2400, height = 2000, res = 300)
-par(mfrow = c(2, 2))
-plot(mod_optimal, which = 1)   # résidus vs valeurs ajustées (linéarité)
-plot(mod_optimal, which = 2)   # QQ-plot (normalité)
-plot(mod_optimal, which = 3)   # scale-location (variance constante)
-plot(mod_optimal, which = 4)   # distance de Cook (observations influentes)
+par(mfrow = c(2, 2), mar = c(4.5, 4.5, 2.5, 1.5))
+y_fit    <- fitted(mod_optimal)
+res      <- residuals(mod_optimal)
+res_std  <- rstandard(mod_optimal)
+cook     <- cooks.distance(mod_optimal)
+obs_ids  <- rownames(train)
+
+# 1. Résidus vs Valeurs ajustées
+plot(y_fit, res,
+     xlab = "Valeurs ajustées (prédites)",
+     ylab = "Résidus",
+     main = "Résidus vs Valeurs ajustées",
+     pch = 1, col = "black", cex = 0.8)
+abline(h = 0, lty = 3, col = "gray50")
+lines(lowess(y_fit, res), col = "red", lwd = 1.2)
+top1 <- order(abs(res), decreasing = TRUE)[1:3]
+text(y_fit[top1], res[top1], labels = obs_ids[top1], pos = c(4, 2, 2), cex = 0.75, col = "black")
+
+# 2. QQ-plot normal
+qq <- qqnorm(res_std,
+             main = "Diagramme Q-Q normal",
+             xlab = "Quantiles théoriques",
+             ylab = "Résidus standardisés",
+             pch = 1, col = "black", cex = 0.8)
+qqline(res_std, lty = 3, col = "gray50")
+top2 <- order(abs(res_std), decreasing = TRUE)[1:3]
+text(qq$x[top2], qq$y[top2], labels = obs_ids[top2], pos = c(2, 4, 4), cex = 0.75, col = "black")
+
+# 3. Échelle-Localisation
+sqrt_abs <- sqrt(abs(res_std))
+plot(y_fit, sqrt_abs,
+     xlab = "Valeurs ajustées (prédites)",
+     ylab = expression(sqrt(paste("|", "Résidus standardisés", "|"))),
+     main = "Échelle-Localisation",
+     pch = 1, col = "black", cex = 0.8)
+lines(lowess(y_fit, sqrt_abs), col = "red", lwd = 1.2)
+top3 <- order(sqrt_abs, decreasing = TRUE)[1:3]
+text(y_fit[top3], sqrt_abs[top3], labels = obs_ids[top3], pos = c(2, 4, 2), cex = 0.75, col = "black")
+
+# 4. Distance de Cook
+plot(cook, type = "h",
+     xlab = "Numéro d'observation",
+     ylab = "Distance de Cook",
+     main = "Distance de Cook",
+     ylim = c(0, max(cook, na.rm = TRUE) * 1.1),
+     col = "gray20")
+top4 <- order(cook, decreasing = TRUE)[1:3]
+text(top4, cook[top4], labels = obs_ids[top4], pos = 3, cex = 0.75, col = "black")
+
 par(mfrow = c(1, 1))
 dev.off()
 

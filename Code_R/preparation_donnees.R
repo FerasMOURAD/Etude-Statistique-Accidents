@@ -118,7 +118,10 @@ accidents_2024$atm_label <- factor(lab_atm[as.character(accidents_2024$atm)], le
 accidents_2024$lum_label <- factor(lab_lum[as.character(accidents_2024$lum)], levels = lab_lum)
 accidents_2024$agg_label <- factor(accidents_2024$agg, levels = 1:2, labels = c("Hors agglomération", "En agglomération"))
 
-# Typologie de collision en 6 catégories homogènes (validé empiriquement) :
+# Typologie de collision en 6 catégories homogènes :
+# Le regroupement des chocs à deux véhicules par l'arrière (code 2) et par le côté (code 3)
+# repose sur une configuration physique analogue (absence de choc frontal direct) et un écart
+# d'amplitude négligeable (0,075 victime) par rapport à la sur-gravité des chocs frontaux (+0,35 victime).
 accidents_2024$col_regroup <- factor(
   case_when(
     accidents_2024$col == 1     ~ "Deux véh. - Frontale",
