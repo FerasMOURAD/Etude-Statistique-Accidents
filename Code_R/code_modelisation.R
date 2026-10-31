@@ -1395,8 +1395,11 @@ par(mfrow = c(1, 1))
 dev.off()
 
 # Courbe de Box-Cox
-png("Rapport/figures/boxcox.png", width = 1800, height = 1400, res = 300)
-boxcox(mod_optimal, lambda = seq(-2, 2, by = 0.1))
+png("Rapport/figures/boxcox.png", width = 2000, height = 1500, res = 300)
+par(mar = c(4.5, 5, 2.5, 1.5))
+boxcox(mod_optimal, lambda = seq(-2, 2, by = 0.1),
+       xlab = expression(paste("Paramètre ", lambda)),
+       ylab = "Log-vraisemblance")
 dev.off()
 
 # Carte 1 : nombre moyen de victimes par accident (aplats de couleurs)
