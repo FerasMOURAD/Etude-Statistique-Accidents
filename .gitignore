@@ -5,4 +5,14 @@ Rplots/
 .vscode/
 .RData
 Rplots.pdf
-Rapport/
+
+# Fichiers temporaires et privés LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+Rapport/figures_annexes/
+Rapport/synthese_tests.tex
