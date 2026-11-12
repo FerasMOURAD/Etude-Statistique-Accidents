@@ -1,6 +1,6 @@
 # Étude Statistique et Prédictive des Accidents Corporels (France - 2024)
 
-Ce projet universitaire (BUT Science des Données - 3ème année) propose une analyse approfondie des accidents corporels de la circulation survenus en France en 2024 à partir des bases officielles **BAAC** (Bulletin d'Analyse des Accidents Corporels) et des données démographiques légales de l'**INSEE**.
+Ce projet universitaire (BUT Science des Données - 3ème année) propose une analyse approfondie des accidents corporels de la circulation survenus en France en 2024 à partir des bases officielles **BAAC** (Bulletin d'Analyse des Accidents Corporels) et des données démographiques légales de l'INSEE.
 
 ---
 
